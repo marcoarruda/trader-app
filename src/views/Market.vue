@@ -1,7 +1,7 @@
 <template>
-  <div class="home">
-    <h1>Carteira</h1>
-    <h2>Saldo disponível: R$ {{ personalInfo.balanceAvailable }}</h2>
+  <h1>Ofertas de Mercado</h1>
+  <h2>Saldo disponível: R$ {{ personalInfo.balanceAvailable }}</h2>
+  <div class="container">
     <OfferCard
       v-for="company in companies"
       :key="company.code"
@@ -13,10 +13,9 @@
 <script lang="ts">
 import OfferCard from '@/components/OfferCard.vue'
 import { defineComponent } from 'vue'
-// import HelloWorld from '@/components/HelloWorld.vue' // @ is an alias to /src
 
 export default defineComponent({
-  name: 'Home',
+  name: 'Market',
   components: {
     OfferCard
   },
@@ -33,7 +32,6 @@ export default defineComponent({
         price: 112.43
       }
     ]
-
     const personalInfo = {
       balanceAvailable: 12540.22
     }
@@ -45,3 +43,14 @@ export default defineComponent({
   }
 })
 </script>
+
+<style lang="scss" scoped>
+.container {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  justify: center;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-auto-rows: auto;
+}
+</style>
