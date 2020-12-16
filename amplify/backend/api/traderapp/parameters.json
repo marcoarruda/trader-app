@@ -1,0 +1,11 @@
+{
+    "AppSyncApiName": "traderapp",
+    "DynamoDBBillingMode": "PAY_PER_REQUEST",
+    "DynamoDBEnableServerSideEncryption": false,
+    "AuthCognitoUserPoolId": {
+        "Fn::GetAtt": [
+            "authtraderappbfd98b0a",
+            "Outputs.UserPoolId"
+        ]
+    }
+}

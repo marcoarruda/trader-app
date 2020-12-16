@@ -4,15 +4,38 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-
+import { defineComponent, onMounted } from 'vue'
 import Header from '@/components/Header.vue'
+import { useStore } from 'vuex'
+import { Auth, graphqlOperation, API } from 'aws-amplify'
+import { listAccounts } from './graphql/queries'
 
 document.title = 'Trader App'
 
 export default defineComponent({
   components: { Header },
-  name: 'App'
+  name: 'App',
+  setup() {
+    const store = useStore()
+    onMounted(async () => {
+      try {
+        const user = await Auth.currentAuthenticatedUser()
+        store.dispatch('auth/setUser', user)
+
+        const filter = {
+          owner: { eq: user.username }
+        }
+
+        const accounts: any = await API.graphql(
+          graphqlOperation(listAccounts, { filter })
+        )
+
+        store.dispatch('market/setAccount', accounts.data.listAccounts.items[0])
+      } catch (error) {
+        // console.log(error)
+      }
+    })
+  }
 })
 </script>
 
@@ -29,7 +52,7 @@ body,
 }
 
 .container {
-  margin-top: 85px;
+  margin-top: 100px;
   flex-direction: column;
   display: flex;
   align-items: center;

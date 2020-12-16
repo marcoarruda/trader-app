@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <h1>Carteira</h1>
-    <h2>Saldo disponível: R$ {{ personalInfo.balanceAvailable }}</h2>
+    <h2>Saldo disponível: R$ {{ personalInfo.balance }}</h2>
     <OfferCard
       v-for="company in companies"
       :key="company.code"
@@ -12,7 +12,8 @@
 
 <script lang="ts">
 import OfferCard from '@/components/OfferCard.vue'
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
+import { useStore } from 'vuex'
 // import HelloWorld from '@/components/HelloWorld.vue' // @ is an alias to /src
 
 export default defineComponent({
@@ -21,6 +22,8 @@ export default defineComponent({
     OfferCard
   },
   setup() {
+    const store = useStore()
+
     const companies = [
       {
         code: 'EPR1',
@@ -34,13 +37,9 @@ export default defineComponent({
       }
     ]
 
-    const personalInfo = {
-      balanceAvailable: 12540.22
-    }
-
     return {
       companies,
-      personalInfo
+      personalInfo: computed(() => store.getters['market/getAccount'])
     }
   }
 })

@@ -20,7 +20,9 @@
         type="password"
         placeholder="senha"
       />
-      <CustomButton class="login-button" @click="signUp()">Entrar</CustomButton>
+      <CustomButton class="login-button" @click="signUp()"
+        >Cadastrar</CustomButton
+      >
       <router-link to="/login">Já tenho uma conta</router-link>
     </form>
     <form v-else @submit.prevent="confirmSignUp()">
@@ -39,9 +41,11 @@
 </template>
 
 <script lang="ts">
-import { Auth } from 'aws-amplify'
+import { API, Auth, graphqlOperation } from 'aws-amplify'
+import { createAccount } from '../graphql/mutations'
+import { listAccounts } from '../graphql/queries'
 import { defineComponent, onMounted, reactive, ref } from 'vue'
-import store from '@/store/index'
+import { useStore } from 'vuex'
 import router from '@/router'
 import CustomInput from '@/components/CustomInput.vue'
 import CustomButton from '@/components/CustomButton.vue'
@@ -50,6 +54,7 @@ export default defineComponent({
   name: 'Login',
   components: { CustomInput, CustomButton },
   setup() {
+    const store = useStore()
     const confirm = ref(false)
     const userCredentials = reactive({
       name: '',
@@ -69,7 +74,7 @@ export default defineComponent({
           }
         })
         confirm.value = true
-        store.dispatch('setUser', user)
+        store.dispatch('auth/setUser', user)
       } catch (error) {
         console.log(error)
       }
@@ -79,24 +84,22 @@ export default defineComponent({
       try {
         await Auth.confirmSignUp(userCredentials.email, userCredentials.code)
 
-        console.log(confirm)
-        const user = await Auth.signIn({
+        await store.dispatch('auth/loginAction', {
           username: userCredentials.email,
           password: userCredentials.password
         })
-        store.dispatch('setUser', user)
         router.push('/')
       } catch (error) {
-        console.log(error)
+        // console.log(error)
       }
     }
 
     onMounted(async () => {
       try {
         const user = await Auth.currentAuthenticatedUser()
-        store.dispatch('setUser', user)
+        store.dispatch('auth/setUser', user)
       } catch (error) {
-        console.log(error)
+        // console.log(error)
       }
     })
 

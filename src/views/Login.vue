@@ -49,26 +49,16 @@ export default defineComponent({
           return
         }
 
-        const user = await Auth.signIn({
+        await store.dispatch('auth/loginAction', {
           username: userCredentials.email,
           password: userCredentials.password
         })
-        store.dispatch('setUser', user)
         router.push('/')
       } catch (error) {
         console.log(error)
+      } finally {
       }
     }
-
-    onMounted(async () => {
-      try {
-        const user = await Auth.currentAuthenticatedUser()
-        store.dispatch('setUser', user)
-        router.push('/')
-      } catch (error) {
-        console.log(error)
-      }
-    })
 
     return {
       userCredentials,

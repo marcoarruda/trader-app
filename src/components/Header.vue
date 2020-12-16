@@ -1,8 +1,12 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/market">Mercado</router-link>
-    <button @click="logout()">Sair</button>
+  <div class="nav">
+    <div class="nav-links">
+      <router-link to="/">Carteira</router-link>
+      <router-link to="/market">Mercado</router-link>
+    </div>
+    <div class="user-action">
+      <CustomButton @click="logout()">Sair</CustomButton>
+    </div>
   </div>
 </template>
 
@@ -11,27 +15,30 @@ import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
 import { Auth } from 'aws-amplify'
 import router from '@/router'
+import CustomButton from '@/components/CustomButton.vue'
 
 export default defineComponent({
   name: 'Header',
+  components: { CustomButton },
   setup() {
     const store = useStore()
     const logout = async () => {
       await Auth.signOut()
-      store.dispatch('setUser', null)
+      store.dispatch('auth/setUser', null)
       router.push('/login')
     }
 
     return {
-      logout
+      logout,
+      user: computed(() => store.getters.getUser)
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
-#nav {
-  padding: 30px 0;
+.nav {
+  padding: 30px 16px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   position: fixed;
   width: 100%;
@@ -40,6 +47,7 @@ export default defineComponent({
   background: white;
   display: flex;
   justify-content: center;
+  align-items: center;
 
   a {
     font-weight: bold;
@@ -50,6 +58,14 @@ export default defineComponent({
     &.router-link-exact-active {
       color: #42b983;
     }
+  }
+
+  // .nav-links {
+  //   margin-left: auto;
+  // }
+
+  .user-action {
+    margin-left: auto;
   }
 }
 </style>

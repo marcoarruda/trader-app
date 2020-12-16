@@ -40,7 +40,8 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  if (store.getters.getUser) {
+  // console.log(store.getters['auth/getUser'])
+  if (store.getters['auth/getUser']) {
     if (to.name === 'Login') {
       next('/')
     } else {

@@ -7,6 +7,7 @@ type marketState = {
 }
 
 const market = {
+  namespaced: true,
   state: () => ({
     companies: [],
     account: null,

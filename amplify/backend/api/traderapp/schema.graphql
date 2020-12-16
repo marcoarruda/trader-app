@@ -1,0 +1,31 @@
+type Company @model {
+  id: ID!
+  code: String!
+  name: String!
+  price: Float!
+  papers: [Paper] @connection(keyName: "byCompany", fields: ["id"])
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Paper @model
+  @key(name: "byAccount", fields: ["accountID"])
+  @key(name: "byCompany", fields: ["companyID"]) {
+  id: ID!
+  quantity: Int!
+  accountID: ID!
+  companyID: ID!
+  account: Account @connection(fields: ["accountID"])
+  company: Company @connection(fields: ["companyID"])
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Account @model @auth(rules: [{ allow: owner, ownerField: "owner" }]) {
+  id: ID!
+  balance: Float
+  owner: String!
+  papers: [Paper] @connection(keyName: "byAccount", fields: ["id"])
+  createdAt: String!
+  updatedAt: String!
+}
