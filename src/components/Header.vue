@@ -2,21 +2,28 @@
   <div id="nav">
     <router-link to="/">Home</router-link> |
     <router-link to="/market">Mercado</router-link>
+    <button @click="logout()">Sair</button>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
+import { Auth } from 'aws-amplify'
+import router from '@/router'
 
 export default defineComponent({
   name: 'Header',
   setup() {
     const store = useStore()
-    const user = computed(() => store.getters.getUser)
+    const logout = async () => {
+      await Auth.signOut()
+      store.dispatch('setUser', null)
+      router.push('/login')
+    }
 
     return {
-      user
+      logout
     }
   }
 })

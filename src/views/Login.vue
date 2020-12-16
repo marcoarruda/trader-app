@@ -54,6 +54,7 @@ export default defineComponent({
           password: userCredentials.password
         })
         store.dispatch('setUser', user)
+        router.push('/')
       } catch (error) {
         console.log(error)
       }
@@ -63,9 +64,7 @@ export default defineComponent({
       try {
         const user = await Auth.currentAuthenticatedUser()
         store.dispatch('setUser', user)
-        if (store.getters.getUser) {
-          router.push('/')
-        }
+        router.push('/')
       } catch (error) {
         console.log(error)
       }
