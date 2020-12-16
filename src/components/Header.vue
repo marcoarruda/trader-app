@@ -6,9 +6,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
+import { useStore } from 'vuex'
+
 export default defineComponent({
-  name: 'Header'
+  name: 'Header',
+  setup() {
+    const store = useStore()
+    const user = computed(() => store.getters.getUser)
+
+    return {
+      user
+    }
+  }
 })
 </script>
 

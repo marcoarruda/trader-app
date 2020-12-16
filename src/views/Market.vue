@@ -1,4 +1,4 @@
-<template>
+te<template>
   <h1>Ofertas de Mercado</h1>
   <h2>Saldo disponível: R$ {{ personalInfo.balanceAvailable }}</h2>
   <div class="container">
@@ -49,7 +49,6 @@ export default defineComponent({
   display: grid;
   margin: 0;
   padding: 0;
-  justify: center;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   grid-auto-rows: auto;
 }

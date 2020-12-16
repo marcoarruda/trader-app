@@ -8,6 +8,8 @@ import { defineComponent } from 'vue'
 
 import Header from '@/components/Header.vue'
 
+document.title = 'Trader App'
+
 export default defineComponent({
   components: { Header },
   name: 'App'
@@ -15,16 +17,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+*,
+body,
 #app {
   font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-*,
-body,
-root {
-  font-family: 'Roboto', sans-serif;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -32,7 +30,10 @@ root {
 
 .container {
   margin-top: 85px;
-  padding: 5px 15px;
-  overflow: hidden;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: calc(100vh - 85px);
 }
 </style>

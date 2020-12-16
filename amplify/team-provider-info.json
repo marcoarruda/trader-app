@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-traderapp-dev-83720-authRole",
+      "UnauthRoleArn": "arn:aws:iam::376873334031:role/amplify-traderapp-dev-83720-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::376873334031:role/amplify-traderapp-dev-83720-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-traderapp-dev-83720-deployment",
+      "UnauthRoleName": "amplify-traderapp-dev-83720-unauthRole",
+      "StackName": "amplify-traderapp-dev-83720",
+      "StackId": "arn:aws:cloudformation:us-east-1:376873334031:stack/amplify-traderapp-dev-83720/74f2ebd0-3f9b-11eb-8eaa-0e580a5372a7",
+      "AmplifyAppId": "deaggff8f7b3m"
+    },
+    "categories": {
+      "auth": {
+        "traderappbfd98b0a": {}
+      }
+    }
+  }
+}
