@@ -1,34 +1,24 @@
 <template>
   <div class="card-container">
-    <h1 class="card-title">{{ company.code }}</h1>
-    <h2>{{ company.name }}</h2>
-    <h3 v-if="!alterar">Preço: R$ {{ company.price }}</h3>
-    <CustomInput v-if="alterar" v-model="price" />
-    <CustomButton
-      style="margin-top: 12px"
-      v-if="!alterar"
-      @click="alterar = true"
-      >Alterar</CustomButton
-    >
-    <CustomButton v-if="alterar" @click="changeCompany()">Salvar</CustomButton>
-    <CustomButton
-      style="margin-top: 12px"
-      v-if="alterar"
-      @click="alterar = false"
-      >Cancelar</CustomButton
-    >
-    <br />
-    <h3>Quantidade Vendida: {{ soldAmount }}</h3>
+    <div class="card-title">
+      <div class="company-code">{{ company.code }}</div>
+      <div v-if="!alterar" class="company-price" @click="alterar = !alterar">
+        R$ {{ company.price }}
+      </div>
+      <CustomInput v-else v-model="price" @keydown.enter="changeCompany()" />
+    </div>
+    <div class="company-name">{{ company.name }}</div>
+    <!-- <div class="company-quantity-sold">
+      Quantidade Vendida: {{ soldAmount }}
+    </div> -->
   </div>
 </template>
 <script lang="ts">
-import { API, Auth, graphqlOperation } from 'aws-amplify'
+import { API, graphqlOperation } from 'aws-amplify'
 import { updateCompany } from '@/graphql/mutations'
 import { listPapers } from '@/graphql/queries'
 import { defineComponent, ref, computed, onMounted, reactive } from 'vue'
-import { useStore } from 'vuex'
 import CustomInput from './CustomInput.vue'
-import CustomButton from './CustomButton.vue'
 
 export default defineComponent({
   name: 'CompanyCard',
@@ -39,11 +29,9 @@ export default defineComponent({
     }
   },
   components: {
-    CustomButton,
     CustomInput
   },
   setup(props) {
-    const store = useStore()
     const alterar = ref(false)
     const price = ref(props.company.price)
     const companyPapers = reactive<
@@ -58,7 +46,10 @@ export default defineComponent({
         price: price.value
       }
 
-      await API.graphql(graphqlOperation(updateCompany, { input }))
+      try {
+        await API.graphql(graphqlOperation(updateCompany, { input }))
+        alterar.value = false
+      } catch (error) {}
     }
 
     const soldAmount = computed(() => {
@@ -69,16 +60,20 @@ export default defineComponent({
       return qtd
     })
 
-    onMounted(async () => {
-      const filter = {
-        companyID: { eq: props.company.id }
-      }
-      const papers: any = await API.graphql(
-        graphqlOperation(listPapers, { filter })
-      )
+    // onMounted(async () => {
+    //   const filter = {
+    //     companyID: { eq: props.company.id }
+    //   }
+    //   const papers: any = await API.graphql(
+    //     graphqlOperation(listPapers, { filter })
+    //   )
 
-      companyPapers.values = papers.data.listPapers.items
-    })
+    //   console.log(papers)
+
+    //   companyPapers.push(...papers.data.listPapers.items)
+
+    //   console.log(companyPapers)
+    // })
 
     return {
       alterar,
@@ -92,15 +87,35 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .card-container {
-  padding: 15px;
+  padding: 12px;
   margin: 10px;
   border-radius: 7px;
   background: #2c2f33;
 }
 .card-title {
+  display: flex;
   font-size: 2rem;
-  color: rgb(143, 143, 143);
   margin: 0 0 0.4rem 0;
+  justify-content: space-between;
+  align-items: center;
+
+  .company-code {
+    color: rgb(143, 143, 143);
+  }
+  .company-price {
+    font-size: 24px;
+    font-weight: 200;
+    cursor: pointer;
+  }
+}
+.company-name {
+  margin-bottom: 6px;
+  font-weight: 300;
+}
+.company-quantity-sold {
+  font-weight: 300;
+  margin: 12px 0 auto 0;
+  font-size: 12px;
 }
 .card-action {
   margin-top: 12px;

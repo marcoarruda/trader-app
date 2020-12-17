@@ -1,9 +1,9 @@
 <template>
   <div class="card-container">
-    <h1 class="card-title">
+    <div class="card-title">
       <div class="company-code">{{ company.code }}</div>
       <div class="company-price">R$ {{ company.price }}</div>
-    </h1>
+    </div>
     <h2 class="company-name">{{ company.name }}</h2>
     <div class="status" v-if="wallet && company.quantity > 0">
       Meu Total: R$ {{ company.total }} = {{ company.quantity }}x
@@ -13,6 +13,7 @@
       <CustomInput
         v-model="qtd"
         type="text"
+        placeholder="quantidade"
         oninput="this.value=this.value.replace(/[^0-9]/g,'');"
         :max="maxBuy"
       />
@@ -20,11 +21,12 @@
         Comprar
       </CustomButton>
     </div>
-    <div class="total">Total Venda: R$ {{ totalSell }}</div>
+    <div class="total" v-if="wallet">Total Venda: R$ {{ totalSell }}</div>
     <div class="card-action" v-if="wallet && company.quantity > 0">
       <CustomInput
         v-model="qtdSell"
         type="text"
+        placeholder="quantidade"
         oninput="this.value=this.value.replace(/[^0-9]/g,'');"
       />
       <CustomButton class="sell-button card-button" @click="sell()">
@@ -35,10 +37,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, getTransitionRawChildren, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import CustomButton from './CustomButton.vue'
 import CustomInput from './CustomInput.vue'
-import { API, Auth, graphqlOperation } from 'aws-amplify'
+import { API, graphqlOperation } from 'aws-amplify'
 import {
   createPaper,
   updatePaper,
@@ -63,10 +65,10 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore()
-    const qtd = ref(0)
-    const qtdSell = ref(0)
-    const total = computed(() => props.company.price * qtd.value)
-    const totalSell = computed(() => props.company.price * qtdSell.value)
+    const qtd = ref()
+    const qtdSell = ref()
+    const total = computed(() => props.company.price * qtd.value || 0)
+    const totalSell = computed(() => props.company.price * qtdSell.value || 0)
 
     const buy = async () => {
       const account: any = await API.graphql(
@@ -92,7 +94,20 @@ export default defineComponent({
             companyID: props.company.id,
             accountID: store.getters['market/getAccount'].id
           }
-          await API.graphql(graphqlOperation(updatePaper, { input: inputBuy }))
+          const response: any = await API.graphql(
+            graphqlOperation(updatePaper, { input: inputBuy })
+          )
+
+          store.dispatch(
+            'market/setMyPapers',
+            store.getters['market/getMyPapers'].map((paper: any) => {
+              if (paper.id === response.data.updatePaper.id) {
+                return { ...paper, ...response.data.updatePaper }
+              } else {
+                return paper
+              }
+            })
+          )
         } else {
           const inputBuy = {
             quantity: qtd.value,
@@ -100,7 +115,13 @@ export default defineComponent({
             accountID: store.getters['market/getAccount'].id
           }
 
-          await API.graphql(graphqlOperation(createPaper, { input: inputBuy }))
+          const response: any = await API.graphql(
+            graphqlOperation(createPaper, { input: inputBuy })
+          )
+          store.dispatch('market/setMyPapers', [
+            ...store.getters['market/getMyPapers'],
+            response.data.createPaper
+          ])
         }
         qtd.value = 0
       }
@@ -127,6 +148,13 @@ export default defineComponent({
           await API.graphql(
             graphqlOperation(deletePaper, { input: { id: paper.id } })
           )
+
+          store.dispatch(
+            'market/setMyPapers',
+            store.getters['market/getMyPapers'].filter(
+              (paperOld: any) => paperOld.id !== paper.id
+            )
+          )
         } else {
           const inputBuy = {
             id: paper.id,
@@ -134,7 +162,19 @@ export default defineComponent({
             companyID: props.company.id,
             accountID: store.getters['market/getAccount'].id
           }
-          await API.graphql(graphqlOperation(updatePaper, { input: inputBuy }))
+          const response: any = await API.graphql(
+            graphqlOperation(updatePaper, { input: inputBuy })
+          )
+          store.dispatch(
+            'market/setMyPapers',
+            store.getters['market/getMyPapers'].map((paper: any) => {
+              if (paper.id === response.data.updatePaper.id) {
+                return { ...paper, ...response.data.updatePaper }
+              } else {
+                return paper
+              }
+            })
+          )
         }
 
         qtdSell.value = 0
@@ -165,7 +205,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .card-container {
-  padding: 15px;
+  padding: 12px;
   margin: 10px;
   border-radius: 7px;
   background: #2c2f33;
@@ -206,6 +246,7 @@ export default defineComponent({
   text-transform: uppercase;
   font-size: 14px;
   font-weight: 500;
+  margin-top: 12px;
 }
 .sell-button {
   color: white;

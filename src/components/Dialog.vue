@@ -17,7 +17,7 @@
         <div class="actions">
           <CustomButton @click="$emit('close')">Cancelar</CustomButton>
           <CustomButton
-            @click="registerCompany()"
+            type="submit"
             :disabled="!validation"
             style="margin-left: 6px"
             >Lançar empresa</CustomButton
@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { API, Auth, graphqlOperation } from 'aws-amplify'
+import { API, graphqlOperation } from 'aws-amplify'
 import { createCompany } from '@/graphql/mutations'
 import { computed, defineComponent, reactive } from 'vue'
 import CustomInput from './CustomInput.vue'
@@ -45,7 +45,7 @@ export default defineComponent({
       defaultValue: false
     }
   },
-  setup() {
+  setup(props, { emit }) {
     const company = reactive({
       code: '',
       name: '',
@@ -63,6 +63,7 @@ export default defineComponent({
 
       const input = company
       await API.graphql(graphqlOperation(createCompany, { input }))
+      emit('close')
     }
 
     return {
@@ -79,7 +80,7 @@ export default defineComponent({
 .modal {
   display: block; /* Hidden by default */
   position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  z-index: 800; /* Sit on top */
   left: 0;
   top: 0;
   width: 100%; /* Full width */

@@ -130,7 +130,7 @@ export default defineComponent({
     width: 100%;
     text-align: center;
     text-decoration: none;
-    color: #333;
+    color: rgb(105, 105, 105);
     text-transform: uppercase;
     font-size: 12px;
     font-weight: bold;

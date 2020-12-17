@@ -10,7 +10,9 @@ const market = {
   namespaced: true,
   state: () => ({
     companies: [],
-    account: {},
+    account: {
+      balance: 0
+    },
     myPapers: []
   }),
   mutations: {

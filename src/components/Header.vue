@@ -3,7 +3,7 @@
     <div class="nav-links">
       <router-link to="/">Carteira</router-link>
       <router-link to="/market">Mercado</router-link>
-      <router-link to="/admin">Admin</router-link>
+      <router-link to="/admin" v-if="isAdmin">Admin</router-link>
     </div>
     <div class="user-action">
       <CustomButton @click="logout()">Sair</CustomButton>
@@ -28,10 +28,18 @@ export default defineComponent({
       store.dispatch('auth/setUser', null)
       router.push('/login')
     }
+    const user = computed(() => store.getters['auth/getUser'])
+
+    const isAdmin = computed(() => {
+      return !!user.value.signInUserSession.accessToken.payload[
+        'cognito:groups'
+      ]?.find((group: string) => group === 'admin')
+    })
 
     return {
       logout,
-      user: computed(() => store.getters.getUser)
+      user: computed(() => store.getters.getUser),
+      isAdmin
     }
   }
 })

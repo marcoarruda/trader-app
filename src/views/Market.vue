@@ -2,7 +2,7 @@
   <div class="content">
     <div class="market-header">
       <h1>Ofertas de Mercado</h1>
-      <h2>Saldo disponível: R$ {{ personalInfo.balance }}</h2>
+      <h2>Saldo disponível: R$ {{ personalInfo.balance.toFixed(2) }}</h2>
     </div>
     <div class="cards-container">
       <OfferCard
@@ -39,10 +39,11 @@ export default defineComponent({
 .cards-container {
   display: grid;
   margin: 0;
-  padding: 0;
   grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
   grid-auto-rows: auto;
   width: 100vw;
+
+  padding: 0 5px;
 }
 
 .market-header {

@@ -21,5 +21,13 @@ input {
   outline: none;
   border-radius: 7px;
   background-color: #3e4144;
+  transition: ease 0.2s;
+  border: 2px solid rgba(#000000, 0);
+
+  &:hover,
+  &:active,
+  &:focus {
+    border: 2px solid rgb(218, 218, 218);
+  }
 }
 </style>

@@ -1,6 +1,5 @@
 <template>
   <div class="admin-header">
-    <h1>Admin</h1>
     <CustomButton @click="openDialog">NOVA EMPRESA</CustomButton>
   </div>
   <div class="cards-container">

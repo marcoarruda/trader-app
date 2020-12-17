@@ -45,7 +45,16 @@ router.beforeEach(async (to, from, next) => {
     if (to.name === 'Login') {
       next('/')
     } else {
-      next()
+      if (to.name === 'Admin') {
+        const user = store.getters['auth/getUser']
+        user.signInUserSession.accessToken.payload['cognito:groups'].find(
+          (grupo: string) => grupo === 'admin'
+        )
+          ? next()
+          : next('/')
+      } else {
+        next()
+      }
     }
   } else {
     if (to.name !== 'Login' && to.name !== 'Signup') {
