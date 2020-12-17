@@ -10,29 +10,29 @@ const market = {
   namespaced: true,
   state: () => ({
     companies: [],
-    account: null,
+    account: {},
     myPapers: []
   }),
   mutations: {
-    mSetCompanies(state: marketState, valor: any) {
-      state.companies = valor
+    mSetCompanies(state: marketState, value: any) {
+      state.companies = value
     },
-    mSetAccount(state: marketState, valor: any) {
-      state.account = valor
+    mSetAccount(state: marketState, value: any) {
+      state.account = value
     },
-    mSetMyPapers(state: marketState, valor: any) {
-      state.myPapers = valor
+    mSetMyPapers(state: marketState, value: any) {
+      state.myPapers = value
     }
   },
   actions: {
-    setCompanies(context: ActionContext<marketState, any>, valor: any) {
-      context.commit('mSetCompanies', valor)
+    setCompanies(context: ActionContext<marketState, any>, value: any) {
+      context.commit('mSetCompanies', value)
     },
-    setAccount(context: ActionContext<marketState, any>, valor: any) {
-      context.commit('mSetAccount', valor)
+    setAccount(context: ActionContext<marketState, any>, value: any) {
+      context.commit('mSetAccount', value)
     },
-    setMyPapers(context: ActionContext<marketState, any>, valor: any) {
-      context.commit('mSetMyPapers', valor)
+    setMyPapers(context: ActionContext<marketState, any>, value: any) {
+      context.commit('mSetMyPapers', value)
     }
   },
   getters: {

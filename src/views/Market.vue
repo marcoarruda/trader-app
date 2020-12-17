@@ -1,18 +1,23 @@
-te<template>
-  <h1>Ofertas de Mercado</h1>
-  <h2>Saldo disponível: R$ {{ personalInfo.balanceAvailable }}</h2>
-  <div class="container">
-    <OfferCard
-      v-for="company in companies"
-      :key="company.code"
-      :company="company"
-    />
+<template>
+  <div class="content">
+    <div class="market-header">
+      <h1>Ofertas de Mercado</h1>
+      <h2>Saldo disponível: R$ {{ personalInfo.balance }}</h2>
+    </div>
+    <div class="cards-container">
+      <OfferCard
+        v-for="company in companies"
+        :key="company.code"
+        :company="company"
+      />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import OfferCard from '@/components/OfferCard.vue'
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
+import { useStore } from 'vuex'
 
 export default defineComponent({
   name: 'Market',
@@ -20,36 +25,43 @@ export default defineComponent({
     OfferCard
   },
   setup() {
-    const companies = [
-      {
-        code: 'EPR1',
-        name: 'Empresa 1',
-        price: 250.35
-      },
-      {
-        code: 'EPR2',
-        name: 'Empresa 2',
-        price: 112.43
-      }
-    ]
-    const personalInfo = {
-      balanceAvailable: 12540.22
-    }
+    const store = useStore()
 
     return {
-      companies,
-      personalInfo
+      companies: computed(() => store.getters['market/getCompanies']),
+      personalInfo: computed(() => store.getters['market/getAccount'])
     }
   }
 })
 </script>
 
-<style lang="scss" scoped>
-.container {
+<style lang="scss">
+.cards-container {
   display: grid;
   margin: 0;
   padding: 0;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
   grid-auto-rows: auto;
+  width: 100vw;
+}
+
+.market-header {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  h1 {
+    font-size: 24px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
 }
 </style>

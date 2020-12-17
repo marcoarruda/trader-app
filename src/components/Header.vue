@@ -3,6 +3,7 @@
     <div class="nav-links">
       <router-link to="/">Carteira</router-link>
       <router-link to="/market">Mercado</router-link>
+      <router-link to="/admin">Admin</router-link>
     </div>
     <div class="user-action">
       <CustomButton @click="logout()">Sair</CustomButton>
@@ -38,20 +39,20 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .nav {
-  padding: 30px 16px;
+  padding: 20px 16px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   position: fixed;
   width: 100%;
   top: 0;
   z-index: 500;
-  background: white;
+  background: #2c2f33;
   display: flex;
   justify-content: center;
   align-items: center;
 
   a {
     font-weight: bold;
-    color: #2c3e50;
+    color: #8d919e;
     margin: 0 10px;
     text-decoration: none;
 

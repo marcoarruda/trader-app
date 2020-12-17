@@ -19,9 +19,11 @@ button {
   outline: none;
   border-radius: 7px;
   cursor: pointer;
+  background: #363636;
+  transition: all linear 0.2s;
 
   &:hover {
-    background-color: rgba(#000000, 0.06);
+    background: #414141;
   }
 }
 </style>

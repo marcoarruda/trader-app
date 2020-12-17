@@ -20,6 +20,6 @@ input {
   width: auto;
   outline: none;
   border-radius: 7px;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  background-color: #3e4144;
 }
 </style>

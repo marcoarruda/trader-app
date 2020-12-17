@@ -94,15 +94,6 @@ export default defineComponent({
       }
     }
 
-    onMounted(async () => {
-      try {
-        const user = await Auth.currentAuthenticatedUser()
-        store.dispatch('auth/setUser', user)
-      } catch (error) {
-        // console.log(error)
-      }
-    })
-
     return {
       confirm,
       userCredentials,
