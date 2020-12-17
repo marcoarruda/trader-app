@@ -8,7 +8,7 @@
     <div class="status" v-if="wallet && company.quantity > 0">
       Meu Total: R$ {{ company.total }} = {{ company.quantity }}x
     </div>
-    <div class="total">Total: R$ {{ total }}</div>
+    <div class="total">Total Compra: R$ {{ total }}</div>
     <div class="card-action">
       <CustomInput
         v-model="qtd"
@@ -20,9 +20,10 @@
         Comprar
       </CustomButton>
     </div>
+    <div class="total">Total Venda: R$ {{ totalSell }}</div>
     <div class="card-action" v-if="wallet && company.quantity > 0">
       <CustomInput
-        v-model="qtd"
+        v-model="qtdSell"
         type="text"
         oninput="this.value=this.value.replace(/[^0-9]/g,'');"
       />
@@ -38,7 +39,12 @@ import { computed, defineComponent, getTransitionRawChildren, ref } from 'vue'
 import CustomButton from './CustomButton.vue'
 import CustomInput from './CustomInput.vue'
 import { API, Auth, graphqlOperation } from 'aws-amplify'
-import { createPaper, updatePaper, updateAccount } from '@/graphql/mutations'
+import {
+  createPaper,
+  updatePaper,
+  updateAccount,
+  deletePaper
+} from '@/graphql/mutations'
 import { getAccount } from '@/graphql/queries'
 import { useStore } from 'vuex'
 
@@ -58,14 +64,11 @@ export default defineComponent({
   setup(props) {
     const store = useStore()
     const qtd = ref(0)
+    const qtdSell = ref(0)
     const total = computed(() => props.company.price * qtd.value)
+    const totalSell = computed(() => props.company.price * qtdSell.value)
 
     const buy = async () => {
-      const inputBuy = {
-        quantity: qtd.value,
-        companyID: props.company.id,
-        accountID: store.getters['market/getAccount'].id
-      }
       const account: any = await API.graphql(
         graphqlOperation(getAccount, {
           id: store.getters['market/getAccount'].id
@@ -79,8 +82,62 @@ export default defineComponent({
         }
         await API.graphql(graphqlOperation(updateAccount, { input }))
 
-        await API.graphql(graphqlOperation(createPaper, { input: inputBuy }))
+        const paper = store.getters['market/getMyPapers'].find(
+          (paper: any) => paper.companyID === props.company.id
+        )
+        if (paper) {
+          const inputBuy = {
+            id: paper.id,
+            quantity: Number(qtd.value) + paper.quantity,
+            companyID: props.company.id,
+            accountID: store.getters['market/getAccount'].id
+          }
+          await API.graphql(graphqlOperation(updatePaper, { input: inputBuy }))
+        } else {
+          const inputBuy = {
+            quantity: qtd.value,
+            companyID: props.company.id,
+            accountID: store.getters['market/getAccount'].id
+          }
+
+          await API.graphql(graphqlOperation(createPaper, { input: inputBuy }))
+        }
         qtd.value = 0
+      }
+    }
+
+    const sell = async () => {
+      const account: any = await API.graphql(
+        graphqlOperation(getAccount, {
+          id: store.getters['market/getAccount'].id
+        })
+      )
+      const paper = store.getters['market/getMyPapers'].find(
+        (paper: any) => paper.companyID === props.company.id
+      )
+      if (qtdSell.value <= paper.quantity) {
+        const input = {
+          id: account.data.getAccount.id,
+          balance: account.data.getAccount.balance + totalSell.value,
+          owner: account.data.getAccount.owner
+        }
+        await API.graphql(graphqlOperation(updateAccount, { input }))
+
+        if (paper.quantity - Number(qtdSell.value) === 0) {
+          await API.graphql(
+            graphqlOperation(deletePaper, { input: { id: paper.id } })
+          )
+        } else {
+          const inputBuy = {
+            id: paper.id,
+            quantity: paper.quantity - Number(qtdSell.value),
+            companyID: props.company.id,
+            accountID: store.getters['market/getAccount'].id
+          }
+          await API.graphql(graphqlOperation(updatePaper, { input: inputBuy }))
+        }
+
+        qtdSell.value = 0
       }
     }
 
@@ -92,12 +149,15 @@ export default defineComponent({
 
     return {
       qtd,
+      qtdSell,
       buy,
+      sell,
       maxBuy,
       logQtd() {
         console.log(qtd)
       },
-      total
+      total,
+      totalSell
     }
   }
 })
