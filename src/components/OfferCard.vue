@@ -2,13 +2,18 @@
   <div class="card-container">
     <div class="card-title">
       <div class="company-code">{{ company.code }}</div>
-      <div class="company-price">R$ {{ company.price.toFixed(2) }}</div>
+      <div class="company-price">
+        {{ numeral(company.price).format('$ 0,0.00') }}
+      </div>
     </div>
     <h2 class="company-name">{{ company.name }}</h2>
     <div class="status" v-if="wallet && company.quantity > 0">
-      Meu Total: R$ {{ company.total.toFixed(2) }} = {{ company.quantity }}x
+      Meu Total: {{ numeral(company.total).format('$ 0,0.00') }} =
+      {{ company.quantity }}x
     </div>
-    <div class="total">Total Compra: R$ {{ total.toFixed(2) }}</div>
+    <div class="total">
+      Total Compra: {{ numeral(total).format('$ 0,0.00') }}
+    </div>
     <div class="card-action">
       <CustomInput
         v-model="qtd"
@@ -22,7 +27,7 @@
       </CustomButton>
     </div>
     <div class="total" v-if="wallet">
-      Total Venda: R$ {{ totalSell.toFixed(2) }}
+      Total Venda: {{ numeral(totalSell).format('$ 0,0.00') }}
     </div>
     <div class="card-action" v-if="wallet && company.quantity > 0">
       <CustomInput
@@ -51,6 +56,7 @@ import {
 } from '@/graphql/mutations'
 import { getAccount } from '@/graphql/queries'
 import { useStore } from 'vuex'
+import numeral from 'numeral'
 
 export default defineComponent({
   name: 'OfferCard',
@@ -226,11 +232,9 @@ export default defineComponent({
       buy,
       sell,
       maxBuy,
-      logQtd() {
-        console.log(qtd)
-      },
       total,
-      totalSell
+      totalSell,
+      numeral
     }
   }
 })

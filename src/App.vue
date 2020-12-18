@@ -15,6 +15,10 @@ import {
   onUpdateCompany,
   onUpdateAccount
 } from './graphql/subscriptions'
+import numeral from 'numeral'
+import 'numeral/locales/pt-br'
+
+numeral.locale('pt-br')
 
 document.title = 'Trader App'
 

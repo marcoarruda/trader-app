@@ -1,6 +1,7 @@
 <template>
   <div class="login-container">
-    <h1>Recuperar Senha</h1>
+    <h1 v-if="!confirm">Recuperar Senha</h1>
+    <h1 v-else>Alterar Senha</h1>
     <form v-if="!confirm" @submit.prevent="forgotPassword()">
       <CustomInput
         style="margin: 10px"
@@ -17,7 +18,7 @@
         style="margin: 10px"
         v-model="userCredentials.password"
         type="password"
-        placeholder="senha"
+        placeholder="nova senha"
       />
       <CustomInput
         style="margin: 10px"

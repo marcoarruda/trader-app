@@ -2,7 +2,9 @@
   <div class="card-container">
     <div class="card-title">
       <div class="company-code">{{ company.code }}</div>
-      <div class="company-price">R$ {{ company.price.toFixed(2) }}</div>
+      <div class="company-price">
+        {{ numeral(company.price).format('$ 0,0.00') }}
+      </div>
     </div>
     <div class="company-name">{{ company.name }}</div>
     <div class="company-field">
@@ -67,6 +69,7 @@ import { defineComponent, computed, reactive } from 'vue'
 import CustomInput from './CustomInput.vue'
 import CustomButton from './CustomButton.vue'
 import { useStore } from 'vuex'
+import numeral from 'numeral'
 
 export default defineComponent({
   name: 'CompanyCard',
@@ -133,7 +136,8 @@ export default defineComponent({
     return {
       companyFields,
       changeCompany,
-      soldAmount
+      soldAmount,
+      numeral
     }
   }
 })

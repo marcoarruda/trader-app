@@ -2,7 +2,10 @@
   <div class="content" v-if="!loading">
     <div class="market-header">
       <h1>Carteira</h1>
-      <h2>Saldo disponível: R$ {{ personalInfo.balance.toFixed(2) }}</h2>
+      <h2>
+        Saldo disponível:
+        {{ numeral(personalInfo.balance).format('$ 0,0.00') }}
+      </h2>
     </div>
     <div v-if="companies.length > 0" class="cards-container">
       <OfferCard
@@ -36,6 +39,7 @@ import { computed, defineComponent, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { graphqlOperation, API } from 'aws-amplify'
 import { listAccounts, listPapers } from '@/graphql/queries'
+import numeral from 'numeral'
 
 export default defineComponent({
   name: 'Home',
@@ -46,6 +50,10 @@ export default defineComponent({
   setup() {
     const store = useStore()
     const loading = ref(true)
+
+    // const balance = computed(() =>
+    //   numeral(personalInfo.value.balance.toFixed(2)).format('0,0.00')
+    // )
 
     const companies = computed(() => {
       return store.getters['market/getMyPapers'].map((paper: any) => ({
@@ -89,6 +97,7 @@ export default defineComponent({
     return {
       companies,
       loading,
+      numeral,
       personalInfo: computed(() => store.getters['market/getAccount'])
     }
   }
