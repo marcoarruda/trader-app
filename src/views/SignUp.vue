@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <h1>Cadastrar</h1>
-    <form v-if="!confirm" @submit.prevent="signIn()">
+    <form v-if="!confirm" @submit.prevent="signUp()">
       <CustomInput
         style="margin: 10px"
         v-model="userCredentials.name"
@@ -78,7 +78,32 @@ export default defineComponent({
         confirm.value = true
         store.dispatch('auth/setUser', user)
       } catch (error) {
-        console.log(error)
+        switch (error.code) {
+          case 'UsernameExistsException':
+            store.dispatch(
+              'setMessage',
+              'E-mail já cadastrado, verifique o formulário'
+            )
+            break
+          case 'InvalidParameterException':
+            store.dispatch(
+              'setMessage',
+              'E-mail/Senha inválidos, verifique o formulário'
+            )
+            break
+          case 'InvalidPasswordException':
+            store.dispatch(
+              'setMessage',
+              'Senha deve conter pelo menos 8 digitos, uma letra maiuscula, um número e um caracter especial ex: Abc.1234'
+            )
+            break
+          default:
+            store.dispatch(
+              'setMessage',
+              'Algo deu errado, tente novamente ou entre em contato conosco'
+            )
+            break
+        }
       } finally {
         store.dispatch('setLoading', false)
       }

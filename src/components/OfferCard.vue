@@ -73,11 +73,12 @@ export default defineComponent({
     const totalSell = computed(() => props.company.price * qtdSell.value || 0)
 
     const buy = async () => {
-      if (!qtd.value || qtd.value === '') {
-        store.dispatch(
-          'setMessage',
-          'Digite uma quantidade para realizar a compra!'
-        )
+      if (!qtd.value || qtd.value === '' || qtd.value < 1) {
+        const msg =
+          !qtd.value || qtd.value === ''
+            ? 'Digite uma quantidade para realizar a compra!'
+            : 'Quantidade deve ser maior que 0'
+        store.dispatch('setMessage', msg)
         return
       }
 
@@ -143,11 +144,12 @@ export default defineComponent({
     }
 
     const sell = async () => {
-      if (!qtdSell.value || qtdSell.value === '') {
-        store.dispatch(
-          'setMessage',
-          'Digite uma quantidade para realizar a venda!'
-        )
+      if (!qtdSell.value || qtdSell.value === '' || qtdSell.value < 1) {
+        const msg =
+          !qtd.value || qtd.value === ''
+            ? 'Digite uma quantidade para realizar a venda!'
+            : 'Quantidade deve ser maior que 0'
+        store.dispatch('setMessage', msg)
         return
       }
 

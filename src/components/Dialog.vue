@@ -63,6 +63,10 @@ export default defineComponent({
       if (!validation.value) {
         return
       }
+      if (Number(company.price) < 1) {
+        store.dispatch('setMessage', 'Preço deve ser maior que 0')
+        return
+      }
       store.dispatch('setMessage', 'loading')
 
       const input = company
