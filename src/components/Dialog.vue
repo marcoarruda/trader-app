@@ -85,18 +85,23 @@ export default defineComponent({
   top: 0;
   width: 100%; /* Full width */
   height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
+  overflow: hidden; /* Enable scroll if needed */
   background-color: rgb(0, 0, 0); /* Fallback color */
   background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
 
 .modal-content {
   background-color: #2c2f33;
-  margin: 50% auto; /* 15% from the top and centered */
+  margin: 20% auto; /* 15% from the top and centered */
+
+  @media (max-width: 700px) {
+    margin: 50% auto;
+  }
+
   padding: 20px;
   display: flex;
   flex-direction: column;
-  width: 80%; /* Could be more or less, depending on screen size */
+  width: 300px; /* Could be more or less, depending on screen size */
   border-radius: 12px;
 }
 

@@ -13,11 +13,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, onMounted, ref } from 'vue'
 import Dialog from '@/components/Dialog.vue'
 import CustomButton from '@/components/CustomButton.vue'
 import CompanyCard from '@/components/CompanyCard.vue'
 import { useStore } from 'vuex'
+import { API, graphqlOperation } from 'aws-amplify'
+import { listCompanys } from '@/graphql/queries'
 
 export default defineComponent({
   name: 'Admin',
@@ -33,6 +35,12 @@ export default defineComponent({
     const openDialog = () => {
       open.value = true
     }
+
+    onMounted(async () => {
+      const companies: any = await API.graphql(graphqlOperation(listCompanys))
+
+      store.dispatch('market/setCompanies', companies.data.listCompanys.items)
+    })
 
     return {
       companies: computed(() => store.getters['market/getCompanies']),

@@ -1,44 +1,40 @@
 <template>
   <div class="login-container">
-    <h1>Cadastrar</h1>
-    <form v-if="!confirm" @submit.prevent="signIn()">
-      <CustomInput
-        style="margin: 10px"
-        v-model="userCredentials.name"
-        type="text"
-        placeholder="nome"
-      />
+    <h1>Recuperar Senha</h1>
+    <form v-if="!confirm" @submit.prevent="forgotPassword()">
       <CustomInput
         style="margin: 10px"
         v-model="userCredentials.email"
         type="text"
         placeholder="email"
       />
+      <CustomButton class="login-button" type="submit"
+        >Enviar Código</CustomButton
+      >
+    </form>
+    <form v-else @submit.prevent="changePassword()">
       <CustomInput
         style="margin: 10px"
         v-model="userCredentials.password"
         type="password"
         placeholder="senha"
       />
-      <CustomButton class="login-button" type="submit">Cadastrar</CustomButton>
-    </form>
-    <form v-else @submit.prevent="confirmSignUp()">
       <CustomInput
         style="margin: 10px"
         v-model="userCredentials.code"
         type="text"
         placeholder="código"
       />
-      <CustomButton class="login-button" type="submit">Entrar</CustomButton>
+      <CustomButton class="login-button" type="submit"
+        >Alterar Senha</CustomButton
+      >
     </form>
-    <router-link to="/login">Já tenho uma conta</router-link>
+    <router-link to="/login">Lembrei minha senha</router-link>
   </div>
 </template>
 
 <script lang="ts">
-import { API, Auth, graphqlOperation } from 'aws-amplify'
-import { createAccount } from '../graphql/mutations'
-import { listAccounts } from '../graphql/queries'
+import { Auth } from 'aws-amplify'
 import { defineComponent, onMounted, reactive, ref } from 'vue'
 import { useStore } from 'vuex'
 import router from '@/router'
@@ -46,7 +42,7 @@ import CustomInput from '@/components/CustomInput.vue'
 import CustomButton from '@/components/CustomButton.vue'
 
 export default defineComponent({
-  name: 'Login',
+  name: 'RecoverPassword',
   components: { CustomInput, CustomButton },
   setup() {
     const store = useStore()
@@ -58,34 +54,25 @@ export default defineComponent({
       code: ''
     })
 
-    const signUp = async () => {
+    const forgotPassword = async () => {
       try {
-        const user = await Auth.signUp({
-          username: userCredentials.email,
-          password: userCredentials.password,
-          attributes: {
-            name: userCredentials.name,
-            email: userCredentials.email
-          }
-        })
+        await Auth.forgotPassword(userCredentials.email)
         confirm.value = true
-        store.dispatch('auth/setUser', user)
       } catch (error) {
         console.log(error)
       }
     }
 
-    const confirmSignUp = async () => {
+    const changePassword = async () => {
       try {
-        await Auth.confirmSignUp(userCredentials.email, userCredentials.code)
-
-        await store.dispatch('auth/loginAction', {
-          username: userCredentials.email,
-          password: userCredentials.password
-        })
-        router.push('/')
+        await Auth.forgotPasswordSubmit(
+          userCredentials.email,
+          userCredentials.code,
+          userCredentials.password
+        )
+        router.push('/login')
       } catch (error) {
-        // console.log(error)
+        console.log(error)
       }
     }
 
@@ -102,8 +89,8 @@ export default defineComponent({
     return {
       confirm,
       userCredentials,
-      signUp,
-      confirmSignUp
+      forgotPassword,
+      changePassword
     }
   }
 })

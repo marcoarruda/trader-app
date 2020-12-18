@@ -25,6 +25,8 @@ export default defineComponent({
     const store = useStore()
     const logout = async () => {
       await Auth.signOut()
+      store.dispatch('market/setMyPapers', [])
+      store.dispatch('market/setAccount', { balance: 0 })
       store.dispatch('auth/setUser', null)
       router.push('/login')
     }

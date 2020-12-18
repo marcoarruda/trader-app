@@ -17,7 +17,10 @@
       <CustomButton class="login-button">Entrar</CustomButton>
     </form>
 
-    <router-link to="/signup">Cadastrar</router-link>
+    <div class="action-links">
+      <router-link to="/signup">Cadastrar</router-link>
+      <router-link to="/recover">Esqueci minha senha</router-link>
+    </div>
   </div>
 </template>
 
@@ -55,10 +58,33 @@ export default defineComponent({
         })
         router.push('/')
       } catch (error) {
-        console.log(error)
+        switch (error.code) {
+          case 'UserNotFoundException':
+            store.dispatch('setMessage', 'Usuário não encontrado')
+            break
+          case 'NotAuthorizedException':
+            store.dispatch('setMessage', 'Email e/ou Senha incorretos')
+            break
+          default:
+            store.dispatch(
+              'setMessage',
+              'Algo deu errado, tente novamente ou entre em contato conosco'
+            )
+            break
+        }
       } finally {
       }
     }
+
+    onMounted(async () => {
+      try {
+        const user = await Auth.currentAuthenticatedUser()
+        store.dispatch('auth/setUser', user)
+        router.push('/')
+      } catch (error) {
+        console.log(error)
+      }
+    })
 
     return {
       userCredentials,
@@ -71,6 +97,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .login-container {
   margin-top: 20px;
+
   width: 300px;
   display: flex;
   flex-direction: column;
@@ -99,6 +126,25 @@ export default defineComponent({
     text-transform: uppercase;
     font-size: 12px;
     font-weight: bold;
+  }
+}
+.action-links {
+  display: flex;
+  justify-content: space-between;
+  align-content: space-between;
+  width: 100%;
+
+  a {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+
+    &:first-child {
+      width: 75px;
+    }
+    &:nth-child(2) {
+      width: 140px;
+    }
   }
 }
 </style>

@@ -1,11 +1,13 @@
 <template>
   <Header v-if="user" />
   <div class="container"><router-view /></div>
+  <SnackBar />
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, onUnmounted } from 'vue'
 import Header from '@/components/Header.vue'
+import SnackBar from '@/components/SnackBar.vue'
 import { useStore } from 'vuex'
 import { Auth, graphqlOperation, API } from 'aws-amplify'
 import { listAccounts, listCompanys, listPapers } from './graphql/queries'
@@ -18,7 +20,7 @@ import {
 document.title = 'Trader App'
 
 export default defineComponent({
-  components: { Header },
+  components: { Header, SnackBar },
   name: 'App',
   setup() {
     const store = useStore()
@@ -33,38 +35,6 @@ export default defineComponent({
         store.dispatch('auth/setUser', user)
 
         if (user) {
-          const filter = {
-            owner: { eq: user.username }
-          }
-
-          const accounts: any = await API.graphql(
-            graphqlOperation(listAccounts, { filter })
-          )
-
-          const companies: any = await API.graphql(
-            graphqlOperation(listCompanys)
-          )
-
-          const papers: any = await API.graphql(
-            graphqlOperation(listPapers, {
-              filter: {
-                accountID: {
-                  eq: accounts.data.listAccounts.items[0].id
-                }
-              }
-            })
-          )
-
-          store.dispatch(
-            'market/setCompanies',
-            companies.data.listCompanys.items
-          )
-          store.dispatch(
-            'market/setAccount',
-            accounts.data.listAccounts.items[0]
-          )
-          store.dispatch('market/setMyPapers', papers.data.listPapers.items)
-
           const operationCreateCompany: any = await API.graphql(
             graphqlOperation(onCreateCompany)
           )
@@ -149,6 +119,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+$headerMargin: 90px;
+$backgroundColor: #23272a;
+
 *,
 body,
 #app {
@@ -163,16 +136,16 @@ body,
 }
 
 .container {
-  margin-top: 90px;
+  margin-top: $headerMargin;
   flex-direction: column;
   display: flex;
   align-items: center;
   width: 100%;
-  height: calc(100vh - 85px);
+  height: calc(100vh - $headerMargin);
 }
 
 body {
-  background-color: #23272a;
+  background-color: $backgroundColor;
 
   overflow-x: hidden;
 }

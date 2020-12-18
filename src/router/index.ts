@@ -4,6 +4,7 @@ import Market from '@/views/Market.vue'
 import Admin from '@/views/Admin.vue'
 import Login from '@/views/Login.vue'
 import SignUp from '@/views/SignUp.vue'
+import RecoverPassword from '@/views/RecoverPassword.vue'
 import store from '@/store/index'
 
 const routes: Array<RouteRecordRaw> = [
@@ -31,6 +32,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/signup',
     name: 'Signup',
     component: SignUp
+  },
+  {
+    path: '/recover',
+    name: 'Recover',
+    component: RecoverPassword
   }
 ]
 
@@ -42,7 +48,7 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   // console.log(store.getters['auth/getUser'])
   if (store.getters['auth/getUser']) {
-    if (to.name === 'Login') {
+    if (to.name === 'Login' || to.name === 'Signup' || to.name === 'Recover') {
       next('/')
     } else {
       if (to.name === 'Admin') {
@@ -57,7 +63,7 @@ router.beforeEach(async (to, from, next) => {
       }
     }
   } else {
-    if (to.name !== 'Login' && to.name !== 'Signup') {
+    if (to.name !== 'Login' && to.name !== 'Signup' && to.name !== 'Recover') {
       next('/login')
     } else {
       next()

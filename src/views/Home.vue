@@ -21,8 +21,10 @@
 
 <script lang="ts">
 import OfferCard from '@/components/OfferCard.vue'
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, onMounted } from 'vue'
 import { useStore } from 'vuex'
+import { graphqlOperation, API } from 'aws-amplify'
+import { listAccounts, listPapers } from '@/graphql/queries'
 
 export default defineComponent({
   name: 'Home',
@@ -38,6 +40,28 @@ export default defineComponent({
         quantity: paper.quantity,
         total: paper.company.price * paper.quantity
       }))
+    })
+
+    onMounted(async () => {
+      const filter = {
+        owner: { eq: store.getters['auth/getUser'].username }
+      }
+
+      const accounts: any = await API.graphql(
+        graphqlOperation(listAccounts, { filter })
+      )
+      store.dispatch('market/setAccount', accounts.data.listAccounts.items[0])
+
+      const papers: any = await API.graphql(
+        graphqlOperation(listPapers, {
+          filter: {
+            accountID: {
+              eq: accounts.data.listAccounts.items[0].id
+            }
+          }
+        })
+      )
+      store.dispatch('market/setMyPapers', papers.data.listPapers.items)
     })
 
     return {
