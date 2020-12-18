@@ -98,7 +98,9 @@ export default defineComponent({
 
 .modal-content {
   background-color: #2c2f33;
-  margin: 20% auto; /* 15% from the top and centered */
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 
   @media (max-width: 700px) {
     margin: 50% auto;
