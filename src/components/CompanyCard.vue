@@ -56,8 +56,12 @@ export default defineComponent({
       if (
         Number(price.value) === Number(props.company.price) ||
         price.value === '' ||
-        !price.value
+        !price.value ||
+        Number(price.value) < 1
       ) {
+        Number(price.value) < 1
+          ? store.dispatch('setMessage', 'Preço deve ser maior que 0')
+          : store.dispatch('setMessage', '')
         return
       }
 
