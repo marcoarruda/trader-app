@@ -1,10 +1,15 @@
 <template>
-  <div id="snackbar" :class="text !== '' ? 'show' : ''">{{ text }}</div>
+  <div id="snackbar" :class="text !== '' ? 'show' : ''">
+    <div v-if="text !== 'loading'">{{ text }}</div>
+    <LoadingSpinner v-else />
+  </div>
 </template>
 <script lang="ts">
 import { defineComponent, computed, watchEffect } from 'vue'
 import { useStore } from 'vuex'
+import LoadingSpinner from './LoadingSpinner.vue'
 export default defineComponent({
+  components: { LoadingSpinner },
   name: 'SnackBar',
   setup() {
     const store = useStore()
@@ -23,19 +28,20 @@ export default defineComponent({
   }
 })
 </script>
-<style scoped>
+
+<style lang="scss" scoped>
 #snackbar {
   visibility: hidden;
-  min-width: 250px;
-  margin-left: -125px;
+  min-width: 300px;
+  text-align: center;
   background-color: #333;
   color: #fff;
-  text-align: center;
-  border-radius: 2px;
+  border-radius: 8px;
   padding: 16px;
   position: fixed;
   z-index: 1;
   left: 50%;
+  transform: translate(-50%, 0);
   bottom: 30px;
 }
 #snackbar.show {

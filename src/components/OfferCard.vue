@@ -6,9 +6,9 @@
     </div>
     <h2 class="company-name">{{ company.name }}</h2>
     <div class="status" v-if="wallet && company.quantity > 0">
-      Meu Total: R$ {{ company.total }} = {{ company.quantity }}x
+      Meu Total: R$ {{ company.total.toFixed(2) }} = {{ company.quantity }}x
     </div>
-    <div class="total">Total Compra: R$ {{ total }}</div>
+    <div class="total">Total Compra: R$ {{ total.toFixed(2) }}</div>
     <div class="card-action">
       <CustomInput
         v-model="qtd"
@@ -21,7 +21,9 @@
         Comprar
       </CustomButton>
     </div>
-    <div class="total" v-if="wallet">Total Venda: R$ {{ totalSell }}</div>
+    <div class="total" v-if="wallet">
+      Total Venda: R$ {{ totalSell.toFixed(2) }}
+    </div>
     <div class="card-action" v-if="wallet && company.quantity > 0">
       <CustomInput
         v-model="qtdSell"
@@ -71,12 +73,22 @@ export default defineComponent({
     const totalSell = computed(() => props.company.price * qtdSell.value || 0)
 
     const buy = async () => {
+      if (!qtd.value || qtd.value === '') {
+        store.dispatch(
+          'setMessage',
+          'Digite uma quantidade para realizar a compra!'
+        )
+        return
+      }
+
       const account: any = await API.graphql(
         graphqlOperation(getAccount, {
           id: store.getters['market/getAccount'].id
         })
       )
       if (account.data.getAccount.balance >= total.value) {
+        store.dispatch('setMessage', 'loading')
+
         const input = {
           id: account.data.getAccount.id,
           balance: account.data.getAccount.balance - total.value,
@@ -123,11 +135,22 @@ export default defineComponent({
             response.data.createPaper
           ])
         }
-        qtd.value = 0
+        store.dispatch('setMessage', 'Compra realizada com sucesso!')
+        qtd.value = null
+      } else {
+        store.dispatch('setMessage', 'Saldo insuficiente para essa operação!')
       }
     }
 
     const sell = async () => {
+      if (!qtdSell.value || qtdSell.value === '') {
+        store.dispatch(
+          'setMessage',
+          'Digite uma quantidade para realizar a venda!'
+        )
+        return
+      }
+
       const account: any = await API.graphql(
         graphqlOperation(getAccount, {
           id: store.getters['market/getAccount'].id
@@ -137,6 +160,8 @@ export default defineComponent({
         (paper: any) => paper.companyID === props.company.id
       )
       if (qtdSell.value <= paper.quantity) {
+        store.dispatch('setMessage', 'loading')
+
         const input = {
           id: account.data.getAccount.id,
           balance: account.data.getAccount.balance + totalSell.value,
@@ -177,7 +202,13 @@ export default defineComponent({
           )
         }
 
-        qtdSell.value = 0
+        store.dispatch('setMessage', 'Venda realizada com sucesso!')
+        qtdSell.value = null
+      } else {
+        store.dispatch(
+          'setMessage',
+          'Quantidade insuficiente para essa operação!'
+        )
       }
     }
 

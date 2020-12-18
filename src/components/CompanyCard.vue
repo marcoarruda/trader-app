@@ -2,12 +2,22 @@
   <div class="card-container">
     <div class="card-title">
       <div class="company-code">{{ company.code }}</div>
-      <div v-if="!alterar" class="company-price" @click="alterar = !alterar">
-        R$ {{ company.price }}
-      </div>
-      <CustomInput v-else v-model="price" @keydown.enter="changeCompany()" />
+      <div class="company-price">R$ {{ company.price }}</div>
     </div>
     <div class="company-name">{{ company.name }}</div>
+    <span :style="{ marginRight: '18px' }">Preço (R$):</span>
+    <CustomInput
+      :style="{ width: '100px' }"
+      v-model="price"
+      @keydown.enter="changeCompany()"
+      type="number"
+      step="0.01"
+    />
+    <CustomButton
+      :style="{ border: '2px solid rgba(0,0,0,0)', marginLeft: '8px' }"
+      @click="changeCompany()"
+      >Alterar</CustomButton
+    >
     <!-- <div class="company-quantity-sold">
       Quantidade Vendida: {{ soldAmount }}
     </div> -->
@@ -19,6 +29,8 @@ import { updateCompany } from '@/graphql/mutations'
 import { listPapers } from '@/graphql/queries'
 import { defineComponent, ref, computed, onMounted, reactive } from 'vue'
 import CustomInput from './CustomInput.vue'
+import CustomButton from './CustomButton.vue'
+import { useStore } from 'vuex'
 
 export default defineComponent({
   name: 'CompanyCard',
@@ -29,9 +41,11 @@ export default defineComponent({
     }
   },
   components: {
-    CustomInput
+    CustomInput,
+    CustomButton
   },
   setup(props) {
+    const store = useStore()
     const alterar = ref(false)
     const price = ref(props.company.price)
     const companyPapers = reactive<
@@ -39,6 +53,15 @@ export default defineComponent({
     >([])
 
     const changeCompany = async () => {
+      if (
+        Number(price.value) === Number(props.company.price) ||
+        price.value === '' ||
+        !price.value
+      ) {
+        return
+      }
+
+      store.dispatch('setMessage', 'loading')
       const input = {
         id: props.company.id,
         name: props.company.name,
@@ -50,6 +73,8 @@ export default defineComponent({
         await API.graphql(graphqlOperation(updateCompany, { input }))
         alterar.value = false
       } catch (error) {}
+
+      store.dispatch('setMessage', 'Preço alterado com sucesso!')
     }
 
     const soldAmount = computed(() => {
@@ -59,21 +84,6 @@ export default defineComponent({
       }
       return qtd
     })
-
-    // onMounted(async () => {
-    //   const filter = {
-    //     companyID: { eq: props.company.id }
-    //   }
-    //   const papers: any = await API.graphql(
-    //     graphqlOperation(listPapers, { filter })
-    //   )
-
-    //   console.log(papers)
-
-    //   companyPapers.push(...papers.data.listPapers.items)
-
-    //   console.log(companyPapers)
-    // })
 
     return {
       alterar,

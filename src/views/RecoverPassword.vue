@@ -8,7 +8,7 @@
         type="text"
         placeholder="email"
       />
-      <CustomButton class="login-button" type="submit"
+      <CustomButton class="login-button" type="submit" :disabled="loading"
         >Enviar Código</CustomButton
       >
     </form>
@@ -25,25 +25,27 @@
         type="text"
         placeholder="código"
       />
-      <CustomButton class="login-button" type="submit"
+      <CustomButton class="login-button" type="submit" :disabled="loading"
         >Alterar Senha</CustomButton
       >
     </form>
     <router-link to="/login">Lembrei minha senha</router-link>
+    <LoadingSpinner v-if="loading" />
   </div>
 </template>
 
 <script lang="ts">
 import { Auth } from 'aws-amplify'
-import { defineComponent, onMounted, reactive, ref } from 'vue'
+import { defineComponent, onMounted, reactive, ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import router from '@/router'
 import CustomInput from '@/components/CustomInput.vue'
 import CustomButton from '@/components/CustomButton.vue'
+import LoadingSpinner from '@/components/LoadingSpinner.vue'
 
 export default defineComponent({
   name: 'RecoverPassword',
-  components: { CustomInput, CustomButton },
+  components: { CustomInput, CustomButton, LoadingSpinner },
   setup() {
     const store = useStore()
     const confirm = ref(false)
@@ -56,15 +58,19 @@ export default defineComponent({
 
     const forgotPassword = async () => {
       try {
+        store.dispatch('setLoading', true)
         await Auth.forgotPassword(userCredentials.email)
         confirm.value = true
       } catch (error) {
         console.log(error)
+      } finally {
+        store.dispatch('setLoading', false)
       }
     }
 
     const changePassword = async () => {
       try {
+        store.dispatch('setLoading', true)
         await Auth.forgotPasswordSubmit(
           userCredentials.email,
           userCredentials.code,
@@ -73,6 +79,8 @@ export default defineComponent({
         router.push('/login')
       } catch (error) {
         console.log(error)
+      } finally {
+        store.dispatch('setLoading', false)
       }
     }
 
@@ -90,7 +98,8 @@ export default defineComponent({
       confirm,
       userCredentials,
       forgotPassword,
-      changePassword
+      changePassword,
+      loading: computed(() => store.getters.getLoading)
     }
   }
 })

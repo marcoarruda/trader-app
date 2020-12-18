@@ -34,6 +34,7 @@ import { createCompany } from '@/graphql/mutations'
 import { computed, defineComponent, reactive } from 'vue'
 import CustomInput from './CustomInput.vue'
 import CustomButton from './CustomButton.vue'
+import { useStore } from 'vuex'
 
 export default defineComponent({
   components: { CustomInput, CustomButton },
@@ -46,6 +47,8 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
+    const store = useStore()
+
     const company = reactive({
       code: '',
       name: '',
@@ -60,9 +63,12 @@ export default defineComponent({
       if (!validation.value) {
         return
       }
+      store.dispatch('setMessage', 'loading')
 
       const input = company
       await API.graphql(graphqlOperation(createCompany, { input }))
+
+      store.dispatch('setMessage', 'Empresa adicionada com sucesso!')
       emit('close')
     }
 

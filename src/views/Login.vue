@@ -14,7 +14,9 @@
         placeholder="senha"
         style="margin: 10px"
       />
-      <CustomButton class="login-button">Entrar</CustomButton>
+      <CustomButton class="login-button" :disabled="loading"
+        >Entrar</CustomButton
+      >
     </form>
 
     <div class="action-links">

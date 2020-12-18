@@ -20,7 +20,9 @@
         type="password"
         placeholder="senha"
       />
-      <CustomButton class="login-button" type="submit">Cadastrar</CustomButton>
+      <CustomButton class="login-button" type="submit" :disabled="loading"
+        >Cadastrar</CustomButton
+      >
     </form>
     <form v-else @submit.prevent="confirmSignUp()">
       <CustomInput
@@ -29,9 +31,12 @@
         type="text"
         placeholder="código"
       />
-      <CustomButton class="login-button" type="submit">Entrar</CustomButton>
+      <CustomButton class="login-button" type="submit" :disabled="loading"
+        >Entrar</CustomButton
+      >
     </form>
     <router-link to="/login">Já tenho uma conta</router-link>
+    <LoadingSpinner v-if="loading" />
   </div>
 </template>
 
@@ -39,15 +44,16 @@
 import { API, Auth, graphqlOperation } from 'aws-amplify'
 import { createAccount } from '../graphql/mutations'
 import { listAccounts } from '../graphql/queries'
-import { defineComponent, onMounted, reactive, ref } from 'vue'
+import { defineComponent, onMounted, reactive, ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import router from '@/router'
 import CustomInput from '@/components/CustomInput.vue'
 import CustomButton from '@/components/CustomButton.vue'
+import LoadingSpinner from '@/components/LoadingSpinner.vue'
 
 export default defineComponent({
   name: 'Login',
-  components: { CustomInput, CustomButton },
+  components: { CustomInput, CustomButton, LoadingSpinner },
   setup() {
     const store = useStore()
     const confirm = ref(false)
@@ -60,6 +66,7 @@ export default defineComponent({
 
     const signUp = async () => {
       try {
+        store.dispatch('setLoading', true)
         const user = await Auth.signUp({
           username: userCredentials.email,
           password: userCredentials.password,
@@ -72,11 +79,14 @@ export default defineComponent({
         store.dispatch('auth/setUser', user)
       } catch (error) {
         console.log(error)
+      } finally {
+        store.dispatch('setLoading', false)
       }
     }
 
     const confirmSignUp = async () => {
       try {
+        store.dispatch('setLoading', true)
         await Auth.confirmSignUp(userCredentials.email, userCredentials.code)
 
         await store.dispatch('auth/loginAction', {
@@ -86,6 +96,8 @@ export default defineComponent({
         router.push('/')
       } catch (error) {
         // console.log(error)
+      } finally {
+        store.dispatch('setLoading', false)
       }
     }
 
@@ -103,7 +115,8 @@ export default defineComponent({
       confirm,
       userCredentials,
       signUp,
-      confirmSignUp
+      confirmSignUp,
+      loading: computed(() => store.getters.getLoading)
     }
   }
 })

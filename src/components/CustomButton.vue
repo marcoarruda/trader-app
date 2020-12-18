@@ -24,6 +24,20 @@ button {
 
   &:hover {
     background: #414141;
+
+    &:disabled {
+      background-color: grey !important;
+      color: black !important;
+      cursor: default !important;
+      border: none !important;
+    }
+  }
+
+  &:disabled {
+    background-color: grey !important;
+    color: black !important;
+    cursor: default !important;
+    border: none !important;
   }
 }
 </style>
