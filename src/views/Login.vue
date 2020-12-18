@@ -21,20 +21,22 @@
       <router-link to="/signup">Cadastrar</router-link>
       <router-link to="/recover">Esqueci minha senha</router-link>
     </div>
+    <LoadingSpinner v-if="loading" />
   </div>
 </template>
 
 <script lang="ts">
 import { Auth } from 'aws-amplify'
-import { defineComponent, onMounted, reactive } from 'vue'
+import { computed, defineComponent, onMounted, reactive } from 'vue'
 import { useStore } from 'vuex'
 import CustomInput from '@/components/CustomInput.vue'
 import CustomButton from '@/components/CustomButton.vue'
 import router from '@/router'
+import LoadingSpinner from '@/components/LoadingSpinner.vue'
 
 export default defineComponent({
   name: 'Login',
-  components: { CustomInput, CustomButton },
+  components: { CustomInput, CustomButton, LoadingSpinner },
   setup() {
     const store = useStore()
 
@@ -45,6 +47,7 @@ export default defineComponent({
 
     const signIn = async () => {
       try {
+        store.dispatch('setLoading', true)
         if (
           userCredentials.email.length === 0 ||
           userCredentials.password.length === 0
@@ -73,6 +76,7 @@ export default defineComponent({
             break
         }
       } finally {
+        store.dispatch('setLoading', false)
       }
     }
 
@@ -88,7 +92,8 @@ export default defineComponent({
 
     return {
       userCredentials,
-      signIn
+      signIn,
+      loading: computed(() => store.getters.getLoading)
     }
   }
 })

@@ -1,37 +1,65 @@
+<template>
+  <div class="lds-ellipsis">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+</template>
 <style lang="scss" scoped>
-.lds-ring {
+.lds-ellipsis {
   display: inline-block;
   position: relative;
-  width: 80px;
-  height: 80px;
-}
-.lds-ring div {
-  box-sizing: border-box;
-  display: block;
-  position: absolute;
   width: 64px;
   height: 64px;
-  margin: 8px;
-  border: 8px solid #fff;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 27px;
+  width: 11px;
+  height: 11px;
   border-radius: 50%;
-  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border-color: #fff transparent transparent transparent;
+  background: #cef;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
 }
-.lds-ring div:nth-child(1) {
-  animation-delay: -0.45s;
+.lds-ellipsis div:nth-child(1) {
+  left: 6px;
+  animation: lds-ellipsis1 0.6s infinite;
 }
-.lds-ring div:nth-child(2) {
-  animation-delay: -0.3s;
+.lds-ellipsis div:nth-child(2) {
+  left: 6px;
+  animation: lds-ellipsis2 0.6s infinite;
 }
-.lds-ring div:nth-child(3) {
-  animation-delay: -0.15s;
+.lds-ellipsis div:nth-child(3) {
+  left: 26px;
+  animation: lds-ellipsis2 0.6s infinite;
 }
-@keyframes lds-ring {
+.lds-ellipsis div:nth-child(4) {
+  left: 45px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
   0% {
-    transform: rotate(0deg);
+    transform: scale(0);
   }
   100% {
-    transform: rotate(360deg);
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(19px, 0);
   }
 }
 </style>
