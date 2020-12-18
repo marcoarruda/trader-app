@@ -53,7 +53,7 @@ router.beforeEach(async (to, from, next) => {
     } else {
       if (to.name === 'Admin') {
         const user = store.getters['auth/getUser']
-        user.signInUserSession.accessToken.payload['cognito:groups'].find(
+        user.signInUserSession.accessToken.payload['cognito:groups']?.find(
           (grupo: string) => grupo === 'admin'
         )
           ? next()

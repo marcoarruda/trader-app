@@ -1,5 +1,5 @@
 <template>
-  <div class="content">
+  <div class="content" v-if="!loading">
     <div class="market-header">
       <h1>Ofertas de Mercado</h1>
       <h2>Saldo disponível: R$ {{ personalInfo.balance.toFixed(2) }}</h2>
@@ -12,24 +12,44 @@
       />
     </div>
   </div>
+  <div class="content" v-else>
+    <LoadingSpinner
+      :style="{
+        position: 'absolute',
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%)'
+      }"
+    />
+  </div>
 </template>
-
 <script lang="ts">
+import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import OfferCard from '@/components/OfferCard.vue'
 import { listAccounts, listCompanys } from '@/graphql/queries'
 import { API, graphqlOperation } from 'aws-amplify'
-import { computed, defineComponent, onMounted } from 'vue'
+import { computed, defineComponent, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 
 export default defineComponent({
   name: 'Market',
   components: {
-    OfferCard
+    OfferCard,
+    LoadingSpinner
   },
   setup() {
     const store = useStore()
+    const loading = ref(true)
 
     onMounted(async () => {
+      const accountStore = store.getters['market/getAccount']
+      const companiesStore = store.getters['market/getCompanies']
+
+      if (accountStore.id && companiesStore.length > 0) {
+        loading.value = false
+        return
+      }
+
       const filter = {
         owner: { eq: store.getters['auth/getUser'].username }
       }
@@ -41,11 +61,13 @@ export default defineComponent({
       const companies: any = await API.graphql(graphqlOperation(listCompanys))
 
       store.dispatch('market/setCompanies', companies.data.listCompanys.items)
+      loading.value = false
     })
 
     return {
       companies: computed(() => store.getters['market/getCompanies']),
-      personalInfo: computed(() => store.getters['market/getAccount'])
+      personalInfo: computed(() => store.getters['market/getAccount']),
+      loading
     }
   }
 })
@@ -68,6 +90,12 @@ export default defineComponent({
   align-items: center;
   justify-content: center;
   flex-direction: column;
+
+  // @media (min-width: 1000px) {
+  //   flex-direction: row;
+  //   justify-content: space-evenly;
+  // }
+
   h1 {
     font-size: 24px;
   }

@@ -2,7 +2,7 @@
   <div class="card-container">
     <div class="card-title">
       <div class="company-code">{{ company.code }}</div>
-      <div class="company-price">R$ {{ company.price }}</div>
+      <div class="company-price">R$ {{ company.price.toFixed(2) }}</div>
     </div>
     <h2 class="company-name">{{ company.name }}</h2>
     <div class="status" v-if="wallet && company.quantity > 0">

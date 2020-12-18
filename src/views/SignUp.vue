@@ -41,9 +41,7 @@
 </template>
 
 <script lang="ts">
-import { API, Auth, graphqlOperation } from 'aws-amplify'
-import { createAccount } from '../graphql/mutations'
-import { listAccounts } from '../graphql/queries'
+import { Auth } from 'aws-amplify'
 import { defineComponent, onMounted, reactive, ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import router from '@/router'
@@ -148,13 +146,17 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 .login-container {
-  margin-top: 20px;
   width: 300px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
 
   h1 {
     text-align: center;

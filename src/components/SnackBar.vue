@@ -1,5 +1,5 @@
 <template>
-  <div id="snackbar" :class="text !== '' ? 'show' : ''">
+  <div id="snackbar" :class="text !== '' ? 'show' : ''" v-if="text !== ''">
     <div v-if="text !== 'loading'">{{ text }}</div>
     <LoadingSpinner v-else />
   </div>
@@ -18,7 +18,7 @@ export default defineComponent({
 
     watchEffect(() => {
       if (text.value !== '') {
-        setTimeout(() => store.dispatch('setMessage', ''), 3000)
+        setTimeout(() => store.dispatch('setMessage', ''), 2700)
       }
     })
 

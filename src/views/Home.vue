@@ -1,5 +1,5 @@
 <template>
-  <div class="content">
+  <div class="content" v-if="!loading">
     <div class="market-header">
       <h1>Carteira</h1>
       <h2>Saldo disponível: R$ {{ personalInfo.balance.toFixed(2) }}</h2>
@@ -17,11 +17,22 @@
       <router-link to="/market">Mercado!</router-link>
     </div>
   </div>
+  <div class="content" v-else>
+    <LoadingSpinner
+      :style="{
+        position: 'absolute',
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%)'
+      }"
+    />
+  </div>
 </template>
 
 <script lang="ts">
 import OfferCard from '@/components/OfferCard.vue'
-import { computed, defineComponent, onMounted } from 'vue'
+import LoadingSpinner from '@/components/LoadingSpinner.vue'
+import { computed, defineComponent, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { graphqlOperation, API } from 'aws-amplify'
 import { listAccounts, listPapers } from '@/graphql/queries'
@@ -29,10 +40,12 @@ import { listAccounts, listPapers } from '@/graphql/queries'
 export default defineComponent({
   name: 'Home',
   components: {
-    OfferCard
+    OfferCard,
+    LoadingSpinner
   },
   setup() {
     const store = useStore()
+    const loading = ref(true)
 
     const companies = computed(() => {
       return store.getters['market/getMyPapers'].map((paper: any) => ({
@@ -43,6 +56,14 @@ export default defineComponent({
     })
 
     onMounted(async () => {
+      const accountStore = store.getters['market/getAccount']
+      const papersStore = store.getters['market/getMyPapers']
+
+      if (accountStore.id && papersStore.length > 0) {
+        loading.value = false
+        return
+      }
+
       const filter = {
         owner: { eq: store.getters['auth/getUser'].username }
       }
@@ -62,10 +83,12 @@ export default defineComponent({
         })
       )
       store.dispatch('market/setMyPapers', papers.data.listPapers.items)
+      loading.value = false
     })
 
     return {
       companies,
+      loading,
       personalInfo: computed(() => store.getters['market/getAccount'])
     }
   }

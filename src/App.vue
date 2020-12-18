@@ -1,5 +1,5 @@
 <template>
-  <Header v-if="user" />
+  <Header v-if="user && $route.name !== 'Login' && $route.name !== 'Signup'" />
   <div class="container"><router-view /></div>
   <SnackBar />
 </template>
@@ -10,7 +10,6 @@ import Header from '@/components/Header.vue'
 import SnackBar from '@/components/SnackBar.vue'
 import { useStore } from 'vuex'
 import { Auth, graphqlOperation, API } from 'aws-amplify'
-import { listAccounts, listCompanys, listPapers } from './graphql/queries'
 import {
   onCreateCompany,
   onUpdateCompany,
@@ -148,5 +147,17 @@ body {
   background-color: $backgroundColor;
 
   overflow-x: hidden;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
 }
 </style>

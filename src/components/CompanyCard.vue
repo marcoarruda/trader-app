@@ -2,22 +2,59 @@
   <div class="card-container">
     <div class="card-title">
       <div class="company-code">{{ company.code }}</div>
-      <div class="company-price">R$ {{ company.price }}</div>
+      <div class="company-price">R$ {{ company.price.toFixed(2) }}</div>
     </div>
     <div class="company-name">{{ company.name }}</div>
-    <span :style="{ marginRight: '18px' }">Preço (R$):</span>
-    <CustomInput
-      :style="{ width: '100px' }"
-      v-model="price"
-      @keydown.enter="changeCompany()"
-      type="number"
-      step="0.01"
-    />
-    <CustomButton
-      :style="{ border: '2px solid rgba(0,0,0,0)', marginLeft: '8px' }"
-      @click="changeCompany()"
-      >Alterar</CustomButton
+    <div class="company-field">
+      <span :style="{ marginRight: '18px' }">Código:</span>
+      <div>
+        <CustomInput
+          :style="{ width: '100%' }"
+          v-model="companyFields.code"
+          @keydown.enter="changeCompany()"
+          type="text"
+          step="0.01"
+        />
+      </div>
+    </div>
+    <div class="company-field">
+      <span :style="{ marginRight: '18px' }">Nome:</span>
+      <div>
+        <CustomInput
+          :style="{ width: '100%' }"
+          v-model="companyFields.name"
+          @keydown.enter="changeCompany()"
+          type="text"
+          step="0.01"
+        />
+      </div>
+    </div>
+    <div class="company-field">
+      <span :style="{ marginRight: '18px' }">Preço (R$):</span>
+      <div>
+        <CustomInput
+          :style="{ width: '100%' }"
+          v-model="companyFields.price"
+          @keydown.enter="changeCompany()"
+          type="number"
+          step="0.01"
+        />
+      </div>
+    </div>
+    <div
+      :style="{
+        display: 'flex',
+        justifyContent: 'flex-end',
+        marginTop: '8px'
+      }"
     >
+      <CustomButton
+        :style="{ border: '2px solid rgba(0,0,0,0)' }"
+        @click="changeCompany()"
+        >Salvar</CustomButton
+      >
+    </div>
+
     <!-- <div class="company-quantity-sold">
       Quantidade Vendida: {{ soldAmount }}
     </div> -->
@@ -26,8 +63,7 @@
 <script lang="ts">
 import { API, graphqlOperation } from 'aws-amplify'
 import { updateCompany } from '@/graphql/mutations'
-import { listPapers } from '@/graphql/queries'
-import { defineComponent, ref, computed, onMounted, reactive } from 'vue'
+import { defineComponent, computed, reactive } from 'vue'
 import CustomInput from './CustomInput.vue'
 import CustomButton from './CustomButton.vue'
 import { useStore } from 'vuex'
@@ -46,39 +82,44 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore()
-    const alterar = ref(false)
-    const price = ref(props.company.price)
+    const companyFields = reactive({
+      code: props.company.code,
+      name: props.company.name,
+      price: props.company.price
+    })
     const companyPapers = reactive<
       { id: string; quantity: number; companyID: string; accountID: string }[]
     >([])
 
     const changeCompany = async () => {
       if (
-        Number(price.value) === Number(props.company.price) ||
-        price.value === '' ||
-        !price.value ||
-        Number(price.value) < 1
+        companyFields.price === '' ||
+        !companyFields.price ||
+        Number(companyFields.price) <= 0 ||
+        (companyFields.name === props.company.name &&
+          companyFields.code === props.company.code &&
+          companyFields.price === props.company.price)
       ) {
-        Number(price.value) < 1
+        Number(companyFields.price) <= 0
           ? store.dispatch('setMessage', 'Preço deve ser maior que 0')
           : store.dispatch('setMessage', '')
         return
       }
 
       store.dispatch('setMessage', 'loading')
+
       const input = {
         id: props.company.id,
-        name: props.company.name,
-        code: props.company.code,
-        price: price.value
+        name: companyFields.name,
+        code: companyFields.code,
+        price: companyFields.price
       }
 
       try {
         await API.graphql(graphqlOperation(updateCompany, { input }))
-        alterar.value = false
       } catch (error) {}
 
-      store.dispatch('setMessage', 'Preço alterado com sucesso!')
+      store.dispatch('setMessage', 'Empresa alterada com sucesso!')
     }
 
     const soldAmount = computed(() => {
@@ -90,8 +131,7 @@ export default defineComponent({
     })
 
     return {
-      alterar,
-      price,
+      companyFields,
       changeCompany,
       soldAmount
     }
@@ -106,6 +146,12 @@ export default defineComponent({
   border-radius: 7px;
   background: #2c2f33;
 }
+.company-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
 .card-title {
   display: flex;
   font-size: 2rem;
@@ -119,7 +165,6 @@ export default defineComponent({
   .company-price {
     font-size: 24px;
     font-weight: 200;
-    cursor: pointer;
   }
 }
 .company-name {

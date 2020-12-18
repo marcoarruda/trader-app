@@ -102,13 +102,14 @@ export default defineComponent({
 
 .modal-content {
   background-color: #2c2f33;
+  position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
 
-  @media (max-width: 700px) {
-    margin: 50% auto;
-  }
+  // @media (max-width: 700px) {
+  //   margin: 50% auto;
+  // }
 
   padding: 20px;
   display: flex;
