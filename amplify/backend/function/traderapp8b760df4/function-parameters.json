@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "auth": {
+      "traderappbfd98b0a": [
+        "read",
+        "update"
+      ]
+    },
+    "api": {
+      "traderapp": [
+        "read",
+        "update"
+      ]
+    }
+  },
+  "lambdaLayers": [
+    {
+      "type": "ProjectLayer",
+      "resourceName": "traderappab891467",
+      "version": 1
+    }
+  ]
+}

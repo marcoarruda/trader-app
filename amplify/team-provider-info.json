@@ -14,6 +14,28 @@
     "categories": {
       "auth": {
         "traderappbfd98b0a": {}
+      },
+      "function": {
+        "traderappab891467": {
+          "deploymentBucketName": "amplify-traderapp-dev-83720-deployment",
+          "s3Key": "amplify-builds/traderappab891467-build.zip"
+        }
+      }
+    },
+    "nonCFNdata": {
+      "function": {
+        "traderappab891467": {
+          "layerVersionMap": {
+            "1": {
+              "permissions": [
+                {
+                  "type": "private"
+                }
+              ],
+              "hash": "Uj278spPGaoP9z6Wl9G0KXo1rL3F1rffrg3cuMOEstU="
+            }
+          }
+        }
       }
     }
   }

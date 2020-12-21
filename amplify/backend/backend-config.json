@@ -19,10 +19,54 @@
               "userPoolId": "authtraderappbfd98b0a"
             }
           },
-          "additionalAuthenticationProviders": []
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "API_KEY",
+              "apiKeyConfig": {
+                "apiKeyExpirationDays": 365,
+                "description": "AdminAPIKey"
+              }
+            }
+          ]
         }
       }
     }
   },
-  "function": {}
+  "function": {
+    "traderappab891467": {
+      "providerPlugin": "awscloudformation",
+      "service": "LambdaLayer",
+      "build": true
+    },
+    "traderapp8b760df4": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "auth",
+          "resourceName": "traderappbfd98b0a",
+          "attributes": [
+            "UserPoolId"
+          ]
+        },
+        {
+          "category": "api",
+          "resourceName": "traderapp",
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput",
+            "GraphQLAPIKeyOutput"
+          ]
+        },
+        {
+          "category": "function",
+          "resourceName": "traderappab891467",
+          "attributes": [
+            "Arn"
+          ]
+        }
+      ]
+    }
+  }
 }

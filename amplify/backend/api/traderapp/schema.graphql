@@ -1,4 +1,4 @@
-type Company @model {
+type Company @model @aws_api_key  {
   id: ID!
   code: String!
   name: String!
@@ -23,7 +23,7 @@ type Paper @model
 
 type Account @model @auth(rules: [{ allow: owner, ownerField: "owner" }]) {
   id: ID!
-  balance: Float
+  balance: Float!
   owner: String!
   papers: [Paper] @connection(keyName: "byAccount", fields: ["id"])
   createdAt: String!
