@@ -70,6 +70,9 @@ export default defineComponent({
           case 'NotAuthorizedException':
             store.dispatch('setMessage', 'Email e/ou Senha incorretos')
             break
+          case 'UserNotConfirmedException':
+            router.push('/signup?confirm=' + userCredentials.email)
+            break
           default:
             store.dispatch(
               'setMessage',

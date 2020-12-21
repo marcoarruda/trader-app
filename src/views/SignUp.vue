@@ -44,7 +44,8 @@
 import { Auth } from 'aws-amplify'
 import { defineComponent, onMounted, reactive, ref, computed } from 'vue'
 import { useStore } from 'vuex'
-import router from '@/router'
+// import router from '@/router'
+import { useRouter, useRoute } from 'vue-router'
 import CustomInput from '@/components/CustomInput.vue'
 import CustomButton from '@/components/CustomButton.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
@@ -61,6 +62,8 @@ export default defineComponent({
       password: '',
       code: ''
     })
+    const router = useRouter()
+    const route = useRoute()
 
     const signUp = async () => {
       try {
@@ -112,11 +115,14 @@ export default defineComponent({
         store.dispatch('setLoading', true)
         await Auth.confirmSignUp(userCredentials.email, userCredentials.code)
 
-        await store.dispatch('auth/loginAction', {
-          username: userCredentials.email,
-          password: userCredentials.password
-        })
-        router.push('/')
+        if (userCredentials.password && userCredentials.password !== '') {
+          await store.dispatch('auth/loginAction', {
+            username: userCredentials.email,
+            password: userCredentials.password
+          })
+        }
+
+        router.push({ name: 'Home' })
       } catch (error) {
         // console.log(error)
       } finally {
@@ -125,10 +131,21 @@ export default defineComponent({
     }
 
     onMounted(async () => {
+      if (route.query.confirm) {
+        await Auth.resendSignUp(route.query.confirm as string)
+        store.dispatch(
+          'setMessage',
+          'Código de confirmação enviado para o seu email ' +
+            route.query.confirm
+        )
+        confirm.value = true
+        userCredentials.email = route.query.confirm as string
+      }
+
       try {
         const user = await Auth.currentAuthenticatedUser()
         store.dispatch('auth/setUser', user)
-        router.push('/')
+        router.push({ name: 'Home' })
       } catch (error) {
         console.log(error)
       }

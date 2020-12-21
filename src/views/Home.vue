@@ -6,6 +6,13 @@
         Saldo disponível:
         {{ numeral(personalInfo.balance).format('$ 0,0.00') }}
       </h2>
+      <h2>
+        Patrimônio:
+        <template v-if="!loadingOperation">
+          {{ numeral(propertyValue).format('$ 0,0.00') }}
+        </template>
+        <template v-else>Calculando...</template>
+      </h2>
     </div>
     <div v-if="companies.length > 0" class="cards-container">
       <OfferCard
@@ -94,10 +101,24 @@ export default defineComponent({
       loading.value = false
     })
 
+    const propertyValue = computed(() => {
+      const balance = store.getters['market/getAccount'].balance
+
+      const properties = store.getters['market/getMyPapers'].reduce(
+        (accumulator: number, paper: any) =>
+          accumulator + paper.company.price * paper.quantity,
+        0
+      )
+
+      return balance + properties
+    })
+
     return {
       companies,
       loading,
       numeral,
+      propertyValue,
+      loadingOperation: computed(() => store.getters.getLoading),
       personalInfo: computed(() => store.getters['market/getAccount'])
     }
   }

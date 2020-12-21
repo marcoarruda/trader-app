@@ -88,6 +88,8 @@ export default defineComponent({
         return
       }
 
+      store.dispatch('setLoading', true)
+
       const account: any = await API.graphql(
         graphqlOperation(getAccount, {
           id: store.getters['market/getAccount'].id
@@ -127,6 +129,10 @@ export default defineComponent({
               }
             })
           )
+          store.dispatch('market/setAccount', {
+            ...account.data.getAccount,
+            balance: account.data.getAccount.balance - total.value
+          })
         } else {
           const inputBuy = {
             quantity: qtd.value,
@@ -141,12 +147,18 @@ export default defineComponent({
             ...store.getters['market/getMyPapers'],
             response.data.createPaper
           ])
+          store.dispatch('market/setAccount', {
+            ...account.data.getAccount,
+            balance: account.data.getAccount.balance - total.value
+          })
         }
         store.dispatch('setMessage', 'Compra realizada com sucesso!')
         qtd.value = null
       } else {
         store.dispatch('setMessage', 'Saldo insuficiente para essa operação!')
       }
+
+      store.dispatch('setLoading', false)
     }
 
     const sell = async () => {
@@ -158,6 +170,8 @@ export default defineComponent({
         store.dispatch('setMessage', msg)
         return
       }
+
+      store.dispatch('setLoading', true)
 
       const account: any = await API.graphql(
         graphqlOperation(getAccount, {
@@ -188,6 +202,10 @@ export default defineComponent({
               (paperOld: any) => paperOld.id !== paper.id
             )
           )
+          store.dispatch('market/setAccount', {
+            ...account.data.getAccount,
+            balance: account.data.getAccount.balance + totalSell.value
+          })
         } else {
           const inputBuy = {
             id: paper.id,
@@ -208,6 +226,10 @@ export default defineComponent({
               }
             })
           )
+          store.dispatch('market/setAccount', {
+            ...account.data.getAccount,
+            balance: account.data.getAccount.balance + totalSell.value
+          })
         }
 
         store.dispatch('setMessage', 'Venda realizada com sucesso!')
@@ -218,6 +240,8 @@ export default defineComponent({
           'Quantidade insuficiente para essa operação!'
         )
       }
+
+      store.dispatch('setLoading', false)
     }
 
     const maxBuy = computed(() => {
