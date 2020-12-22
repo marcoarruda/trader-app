@@ -27,7 +27,7 @@ export const createCompany = /* GraphQL */ `
       updatedAt
     }
   }
-`;
+`
 export const updateCompany = /* GraphQL */ `
   mutation UpdateCompany(
     $input: UpdateCompanyInput!
@@ -53,7 +53,7 @@ export const updateCompany = /* GraphQL */ `
       updatedAt
     }
   }
-`;
+`
 export const deleteCompany = /* GraphQL */ `
   mutation DeleteCompany(
     $input: DeleteCompanyInput!
@@ -79,7 +79,7 @@ export const deleteCompany = /* GraphQL */ `
       updatedAt
     }
   }
-`;
+`
 export const createPaper = /* GraphQL */ `
   mutation CreatePaper(
     $input: CreatePaperInput!
@@ -90,16 +90,6 @@ export const createPaper = /* GraphQL */ `
       quantity
       accountID
       companyID
-      account {
-        id
-        balance
-        owner
-        papers {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
       company {
         id
         code
@@ -115,7 +105,7 @@ export const createPaper = /* GraphQL */ `
       updatedAt
     }
   }
-`;
+`
 export const updatePaper = /* GraphQL */ `
   mutation UpdatePaper(
     $input: UpdatePaperInput!
@@ -126,16 +116,6 @@ export const updatePaper = /* GraphQL */ `
       quantity
       accountID
       companyID
-      account {
-        id
-        balance
-        owner
-        papers {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
       company {
         id
         code
@@ -151,7 +131,7 @@ export const updatePaper = /* GraphQL */ `
       updatedAt
     }
   }
-`;
+`
 export const deletePaper = /* GraphQL */ `
   mutation DeletePaper(
     $input: DeletePaperInput!
@@ -162,16 +142,6 @@ export const deletePaper = /* GraphQL */ `
       quantity
       accountID
       companyID
-      account {
-        id
-        balance
-        owner
-        papers {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
       company {
         id
         code
@@ -187,7 +157,7 @@ export const deletePaper = /* GraphQL */ `
       updatedAt
     }
   }
-`;
+`
 export const createAccount = /* GraphQL */ `
   mutation CreateAccount(
     $input: CreateAccountInput!
@@ -197,22 +167,11 @@ export const createAccount = /* GraphQL */ `
       id
       balance
       owner
-      papers {
-        items {
-          id
-          quantity
-          accountID
-          companyID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
       createdAt
       updatedAt
     }
   }
-`;
+`
 export const updateAccount = /* GraphQL */ `
   mutation UpdateAccount(
     $input: UpdateAccountInput!
@@ -222,22 +181,11 @@ export const updateAccount = /* GraphQL */ `
       id
       balance
       owner
-      papers {
-        items {
-          id
-          quantity
-          accountID
-          companyID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
       createdAt
       updatedAt
     }
   }
-`;
+`
 export const deleteAccount = /* GraphQL */ `
   mutation DeleteAccount(
     $input: DeleteAccountInput!
@@ -247,19 +195,8 @@ export const deleteAccount = /* GraphQL */ `
       id
       balance
       owner
-      papers {
-        items {
-          id
-          quantity
-          accountID
-          companyID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
       createdAt
       updatedAt
     }
   }
-`;
+`

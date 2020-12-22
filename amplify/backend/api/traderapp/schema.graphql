@@ -1,4 +1,4 @@
-type Company @model @aws_api_key  {
+type Company @model {
   id: ID!
   code: String!
   name: String!
@@ -21,7 +21,7 @@ type Paper @model
   updatedAt: String!
 }
 
-type Account @model @auth(rules: [{ allow: owner, ownerField: "owner" }]) {
+type Account @model @auth(rules: [{ allow: owner, ownerField: "owner", provider: userPools }]) {
   id: ID!
   balance: Float!
   owner: String!

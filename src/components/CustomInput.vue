@@ -23,6 +23,7 @@ input {
   background-color: #3e4144;
   transition: ease 0.2s;
   border: 2px solid rgba(#000000, 0);
+  color: #fff;
 
   &:hover,
   &:active,

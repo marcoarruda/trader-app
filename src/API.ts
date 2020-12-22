@@ -314,18 +314,6 @@ export type CreatePaperMutation = {
     quantity: number,
     accountID: string,
     companyID: string,
-    account:  {
-      __typename: "Account",
-      id: string,
-      balance: number,
-      owner: string,
-      papers:  {
-        __typename: "ModelPaperConnection",
-        nextToken: string | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-    } | null,
     company:  {
       __typename: "Company",
       id: string,
@@ -341,6 +329,18 @@ export type CreatePaperMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
+    account:  {
+      __typename: "Account",
+      id: string,
+      balance: number,
+      owner: string,
+      papers:  {
+        __typename: "ModelPaperConnection",
+        nextToken: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
   } | null,
 };
 
@@ -356,18 +356,6 @@ export type UpdatePaperMutation = {
     quantity: number,
     accountID: string,
     companyID: string,
-    account:  {
-      __typename: "Account",
-      id: string,
-      balance: number,
-      owner: string,
-      papers:  {
-        __typename: "ModelPaperConnection",
-        nextToken: string | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-    } | null,
     company:  {
       __typename: "Company",
       id: string,
@@ -383,6 +371,18 @@ export type UpdatePaperMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
+    account:  {
+      __typename: "Account",
+      id: string,
+      balance: number,
+      owner: string,
+      papers:  {
+        __typename: "ModelPaperConnection",
+        nextToken: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
   } | null,
 };
 
@@ -398,18 +398,6 @@ export type DeletePaperMutation = {
     quantity: number,
     accountID: string,
     companyID: string,
-    account:  {
-      __typename: "Account",
-      id: string,
-      balance: number,
-      owner: string,
-      papers:  {
-        __typename: "ModelPaperConnection",
-        nextToken: string | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-    } | null,
     company:  {
       __typename: "Company",
       id: string,
@@ -425,6 +413,18 @@ export type DeletePaperMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
+    account:  {
+      __typename: "Account",
+      id: string,
+      balance: number,
+      owner: string,
+      papers:  {
+        __typename: "ModelPaperConnection",
+        nextToken: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
   } | null,
 };
 
@@ -581,18 +581,6 @@ export type GetPaperQuery = {
     quantity: number,
     accountID: string,
     companyID: string,
-    account:  {
-      __typename: "Account",
-      id: string,
-      balance: number,
-      owner: string,
-      papers:  {
-        __typename: "ModelPaperConnection",
-        nextToken: string | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-    } | null,
     company:  {
       __typename: "Company",
       id: string,
@@ -608,6 +596,18 @@ export type GetPaperQuery = {
     } | null,
     createdAt: string,
     updatedAt: string,
+    account:  {
+      __typename: "Account",
+      id: string,
+      balance: number,
+      owner: string,
+      papers:  {
+        __typename: "ModelPaperConnection",
+        nextToken: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
   } | null,
 };
 
@@ -626,14 +626,6 @@ export type ListPapersQuery = {
       quantity: number,
       accountID: string,
       companyID: string,
-      account:  {
-        __typename: "Account",
-        id: string,
-        balance: number,
-        owner: string,
-        createdAt: string,
-        updatedAt: string,
-      } | null,
       company:  {
         __typename: "Company",
         id: string,
@@ -642,6 +634,39 @@ export type ListPapersQuery = {
         price: number,
         createdAt: string,
         updatedAt: string,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+      account:  {
+        __typename: "Account",
+        id: string,
+        balance: number,
+        owner: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null,
+    } | null > | null,
+    nextToken: string | null,
+  } | null,
+};
+
+export type ListAccountsQueryVariables = {
+  filter?: ModelAccountFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListAccountsQuery = {
+  listAccounts:  {
+    __typename: "ModelAccountConnection",
+    items:  Array< {
+      __typename: "Account",
+      id: string,
+      balance: number,
+      owner: string,
+      papers:  {
+        __typename: "ModelPaperConnection",
+        nextToken: string | null,
       } | null,
       createdAt: string,
       updatedAt: string,
@@ -675,31 +700,6 @@ export type GetAccountQuery = {
     } | null,
     createdAt: string,
     updatedAt: string,
-  } | null,
-};
-
-export type ListAccountsQueryVariables = {
-  filter?: ModelAccountFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type ListAccountsQuery = {
-  listAccounts:  {
-    __typename: "ModelAccountConnection",
-    items:  Array< {
-      __typename: "Account",
-      id: string,
-      balance: number,
-      owner: string,
-      papers:  {
-        __typename: "ModelPaperConnection",
-        nextToken: string | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-    } | null > | null,
-    nextToken: string | null,
   } | null,
 };
 
@@ -785,18 +785,6 @@ export type OnCreatePaperSubscription = {
     quantity: number,
     accountID: string,
     companyID: string,
-    account:  {
-      __typename: "Account",
-      id: string,
-      balance: number,
-      owner: string,
-      papers:  {
-        __typename: "ModelPaperConnection",
-        nextToken: string | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-    } | null,
     company:  {
       __typename: "Company",
       id: string,
@@ -812,6 +800,18 @@ export type OnCreatePaperSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
+    account:  {
+      __typename: "Account",
+      id: string,
+      balance: number,
+      owner: string,
+      papers:  {
+        __typename: "ModelPaperConnection",
+        nextToken: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
   } | null,
 };
 
@@ -822,18 +822,6 @@ export type OnUpdatePaperSubscription = {
     quantity: number,
     accountID: string,
     companyID: string,
-    account:  {
-      __typename: "Account",
-      id: string,
-      balance: number,
-      owner: string,
-      papers:  {
-        __typename: "ModelPaperConnection",
-        nextToken: string | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-    } | null,
     company:  {
       __typename: "Company",
       id: string,
@@ -849,6 +837,18 @@ export type OnUpdatePaperSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
+    account:  {
+      __typename: "Account",
+      id: string,
+      balance: number,
+      owner: string,
+      papers:  {
+        __typename: "ModelPaperConnection",
+        nextToken: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
   } | null,
 };
 
@@ -859,18 +859,6 @@ export type OnDeletePaperSubscription = {
     quantity: number,
     accountID: string,
     companyID: string,
-    account:  {
-      __typename: "Account",
-      id: string,
-      balance: number,
-      owner: string,
-      papers:  {
-        __typename: "ModelPaperConnection",
-        nextToken: string | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-    } | null,
     company:  {
       __typename: "Company",
       id: string,
@@ -886,6 +874,18 @@ export type OnDeletePaperSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
+    account:  {
+      __typename: "Account",
+      id: string,
+      balance: number,
+      owner: string,
+      papers:  {
+        __typename: "ModelPaperConnection",
+        nextToken: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
   } | null,
 };
 

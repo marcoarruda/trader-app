@@ -1,5 +1,6 @@
 import { ActionContext } from 'vuex'
 import { API, Auth, graphqlOperation } from 'aws-amplify'
+import GRAPHQL_AUTH_MODE from 'aws-amplify/lib-esm'
 import { createAccount } from '@/graphql/mutations'
 import { listAccounts } from '@/graphql/queries'
 
@@ -29,9 +30,15 @@ const auth = {
         owner: { eq: user.username }
       }
 
-      const accounts: any = await API.graphql(
-        graphqlOperation(listAccounts, { filter })
-      )
+      const accounts: any = await API.graphql({
+        query: listAccounts,
+        variables: {
+          filter
+        },
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        authMode: 'AMAZON_COGNITO_USER_POOLS'
+      })
 
       if (accounts.data.listAccounts.items.length === 0) {
         const input = {

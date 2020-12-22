@@ -45,11 +45,21 @@ export default defineComponent({
             graphqlOperation(onUpdateCompany)
           )
 
-          const operationUpdateAccount: any = await API.graphql(
-            graphqlOperation(onUpdateAccount, {
+          // const operationUpdateAccount: any = await API.graphql(
+          //   graphqlOperation(onUpdateAccount, {
+          //     owner: store.getters['auth/getUser'].username
+          //   })
+          // )
+
+          const operationUpdateAccount: any = await API.graphql({
+            query: onUpdateAccount,
+            variables: {
               owner: store.getters['auth/getUser'].username
-            })
-          )
+            },
+            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+            // @ts-ignore
+            authMode: 'AMAZON_COGNITO_USER_POOLS'
+          })
 
           createCompanyListener = operationCreateCompany.subscribe({
             next: (data: any) => {
@@ -72,7 +82,15 @@ export default defineComponent({
                   if (paper.company.id === data.value.data.onUpdateCompany.id) {
                     return {
                       ...paper,
-                      company: data.value.data.onUpdateCompany
+                      company: {
+                        ...data.value.data.onUpdateCompany,
+                        trending:
+                          paper.company.price -
+                            data.value.data.onUpdateCompany.price >=
+                          0
+                            ? 'down'
+                            : 'up'
+                      }
                     }
                   } else {
                     return paper
@@ -85,7 +103,23 @@ export default defineComponent({
                 'market/setCompanies',
                 companies.map((company: any) => {
                   if (company.id === data.value.data.onUpdateCompany.id) {
-                    return { ...company, ...data.value.data.onUpdateCompany }
+                    console.log({
+                      trending:
+                        company.price - data.value.data.onUpdateCompany.price >=
+                        0
+                          ? 'down'
+                          : 'up',
+                      name: company.name
+                    })
+                    return {
+                      ...company,
+                      ...data.value.data.onUpdateCompany,
+                      trending:
+                        company.price - data.value.data.onUpdateCompany.price >=
+                        0
+                          ? 'down'
+                          : 'up'
+                    }
                   } else {
                     return company
                   }
@@ -134,7 +168,6 @@ body,
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  color: #ffffff;
   outline: none;
 }
 
@@ -145,6 +178,7 @@ body,
   align-items: center;
   width: 100%;
   height: calc(100vh - $headerMargin);
+  color: #fff;
 }
 
 body {

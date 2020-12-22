@@ -33,6 +33,14 @@
                 }
               ],
               "hash": "Uj278spPGaoP9z6Wl9G0KXo1rL3F1rffrg3cuMOEstU="
+            },
+            "2": {
+              "permissions": [
+                {
+                  "type": "private"
+                }
+              ],
+              "hash": "0WkdoJEwsV0cqMY3+KYN3Ox0xJYWVIPi8eJY1YbUnOY="
             }
           }
         }

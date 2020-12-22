@@ -24,7 +24,7 @@ export const onCreateCompany = /* GraphQL */ `
       updatedAt
     }
   }
-`;
+`
 export const onUpdateCompany = /* GraphQL */ `
   subscription OnUpdateCompany {
     onUpdateCompany {
@@ -47,7 +47,7 @@ export const onUpdateCompany = /* GraphQL */ `
       updatedAt
     }
   }
-`;
+`
 export const onDeleteCompany = /* GraphQL */ `
   subscription OnDeleteCompany {
     onDeleteCompany {
@@ -70,7 +70,7 @@ export const onDeleteCompany = /* GraphQL */ `
       updatedAt
     }
   }
-`;
+`
 export const onCreatePaper = /* GraphQL */ `
   subscription OnCreatePaper {
     onCreatePaper {
@@ -78,16 +78,6 @@ export const onCreatePaper = /* GraphQL */ `
       quantity
       accountID
       companyID
-      account {
-        id
-        balance
-        owner
-        papers {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
       company {
         id
         code
@@ -101,9 +91,19 @@ export const onCreatePaper = /* GraphQL */ `
       }
       createdAt
       updatedAt
+      account {
+        id
+        balance
+        owner
+        papers {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
     }
   }
-`;
+`
 export const onUpdatePaper = /* GraphQL */ `
   subscription OnUpdatePaper {
     onUpdatePaper {
@@ -111,16 +111,6 @@ export const onUpdatePaper = /* GraphQL */ `
       quantity
       accountID
       companyID
-      account {
-        id
-        balance
-        owner
-        papers {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
       company {
         id
         code
@@ -134,9 +124,19 @@ export const onUpdatePaper = /* GraphQL */ `
       }
       createdAt
       updatedAt
+      account {
+        id
+        balance
+        owner
+        papers {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
     }
   }
-`;
+`
 export const onDeletePaper = /* GraphQL */ `
   subscription OnDeletePaper {
     onDeletePaper {
@@ -144,16 +144,6 @@ export const onDeletePaper = /* GraphQL */ `
       quantity
       accountID
       companyID
-      account {
-        id
-        balance
-        owner
-        papers {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
       company {
         id
         code
@@ -167,9 +157,19 @@ export const onDeletePaper = /* GraphQL */ `
       }
       createdAt
       updatedAt
+      account {
+        id
+        balance
+        owner
+        papers {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
     }
   }
-`;
+`
 export const onCreateAccount = /* GraphQL */ `
   subscription OnCreateAccount($owner: String!) {
     onCreateAccount(owner: $owner) {
@@ -191,7 +191,7 @@ export const onCreateAccount = /* GraphQL */ `
       updatedAt
     }
   }
-`;
+`
 export const onUpdateAccount = /* GraphQL */ `
   subscription OnUpdateAccount($owner: String!) {
     onUpdateAccount(owner: $owner) {
@@ -213,7 +213,7 @@ export const onUpdateAccount = /* GraphQL */ `
       updatedAt
     }
   }
-`;
+`
 export const onDeleteAccount = /* GraphQL */ `
   subscription OnDeleteAccount($owner: String!) {
     onDeleteAccount(owner: $owner) {
@@ -235,4 +235,4 @@ export const onDeleteAccount = /* GraphQL */ `
       updatedAt
     }
   }
-`;
+`

@@ -105,7 +105,7 @@
         "Timeout": "25",
         "Code": {
           "S3Bucket": "amplify-traderapp-dev-83720-deployment",
-          "S3Key": "amplify-builds/traderapp8b760df4-6a54664d673071423142-build.zip"
+          "S3Key": "amplify-builds/traderapp8b760df4-68705036727947784c47-build.zip"
         }
       }
     },

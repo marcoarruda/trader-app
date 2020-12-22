@@ -2,8 +2,28 @@
   <div class="card-container">
     <div class="card-title">
       <div class="company-code">{{ company.code }}</div>
-      <div class="company-price">
-        {{ numeral(company.price).format('$ 0,0.00') }}
+      <div
+        :class="{
+          'company-price': true,
+          'price-up': company.trending === 'up',
+          'price-down': company.trending === 'down'
+        }"
+      >
+        <EqualsIcon
+          v-if="!company.trending"
+          :style="{ width: '30px', height: '30px' }"
+        />
+        <TrendingUpIcon
+          v-if="company.trending && company.trending === 'up'"
+          :style="{ width: '30px', height: '30px' }"
+        />
+        <TrendingDownIcon
+          v-if="company.trending && company.trending === 'down'"
+          :style="{ width: '30px', height: '30px' }"
+        />
+        <div style="margin-left: 5px">
+          {{ numeral(company.price).format('$ 0,0.00') }}
+        </div>
       </div>
     </div>
     <h2 class="company-name">{{ company.name }}</h2>
@@ -47,6 +67,9 @@
 import { computed, defineComponent, ref } from 'vue'
 import CustomButton from './CustomButton.vue'
 import CustomInput from './CustomInput.vue'
+import TrendingUpIcon from './TrendingUpIcon.vue'
+import TrendingDownIcon from './TrendingDownIcon.vue'
+import EqualsIcon from './EqualsIcon.vue'
 import { API, graphqlOperation } from 'aws-amplify'
 import {
   createPaper,
@@ -60,7 +83,13 @@ import numeral from 'numeral'
 
 export default defineComponent({
   name: 'OfferCard',
-  components: { CustomInput, CustomButton },
+  components: {
+    CustomInput,
+    CustomButton,
+    TrendingUpIcon,
+    TrendingDownIcon,
+    EqualsIcon
+  },
   props: {
     company: {
       type: Object,
@@ -90,11 +119,16 @@ export default defineComponent({
 
       store.dispatch('setLoading', true)
 
-      const account: any = await API.graphql(
-        graphqlOperation(getAccount, {
+      const account: any = await API.graphql({
+        query: getAccount,
+        variables: {
           id: store.getters['market/getAccount'].id
-        })
-      )
+        },
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        authMode: 'AMAZON_COGNITO_USER_POOLS'
+      })
+
       if (account.data.getAccount.balance >= total.value) {
         store.dispatch('setMessage', 'loading')
 
@@ -103,7 +137,16 @@ export default defineComponent({
           balance: account.data.getAccount.balance - total.value,
           owner: account.data.getAccount.owner
         }
-        await API.graphql(graphqlOperation(updateAccount, { input }))
+
+        await API.graphql({
+          query: updateAccount,
+          variables: {
+            input
+          },
+          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+          // @ts-ignore
+          authMode: 'AMAZON_COGNITO_USER_POOLS'
+        })
 
         const paper = store.getters['market/getMyPapers'].find(
           (paper: any) => paper.companyID === props.company.id
@@ -173,11 +216,15 @@ export default defineComponent({
 
       store.dispatch('setLoading', true)
 
-      const account: any = await API.graphql(
-        graphqlOperation(getAccount, {
+      const account: any = await API.graphql({
+        query: getAccount,
+        variables: {
           id: store.getters['market/getAccount'].id
-        })
-      )
+        },
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        authMode: 'AMAZON_COGNITO_USER_POOLS'
+      })
       const paper = store.getters['market/getMyPapers'].find(
         (paper: any) => paper.companyID === props.company.id
       )
@@ -189,7 +236,17 @@ export default defineComponent({
           balance: account.data.getAccount.balance + totalSell.value,
           owner: account.data.getAccount.owner
         }
-        await API.graphql(graphqlOperation(updateAccount, { input }))
+        // await API.graphql(graphqlOperation(updateAccount, { input }))
+
+        await API.graphql({
+          query: updateAccount,
+          variables: {
+            input
+          },
+          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+          // @ts-ignore
+          authMode: 'AMAZON_COGNITO_USER_POOLS'
+        })
 
         if (paper.quantity - Number(qtdSell.value) === 0) {
           await API.graphql(
@@ -270,6 +327,7 @@ export default defineComponent({
   margin: 10px;
   border-radius: 7px;
   background: #2c2f33;
+  color: #fff;
 }
 .card-title {
   display: flex;
@@ -284,7 +342,16 @@ export default defineComponent({
   .company-price {
     font-size: 24px;
     font-weight: 200;
+    align-items: center;
+    display: flex;
   }
+}
+
+.price-up {
+  color: #42b983 !important;
+}
+.price-down {
+  color: #b94242 !important;
 }
 .card-action {
   margin-top: 6px;

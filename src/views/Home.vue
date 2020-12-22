@@ -83,20 +83,38 @@ export default defineComponent({
         owner: { eq: store.getters['auth/getUser'].username }
       }
 
-      const accounts: any = await API.graphql(
-        graphqlOperation(listAccounts, { filter })
-      )
+      const accounts: any = await API.graphql({
+        query: listAccounts,
+        variables: {
+          filter
+        },
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        authMode: 'AMAZON_COGNITO_USER_POOLS'
+      })
       store.dispatch('market/setAccount', accounts.data.listAccounts.items[0])
 
-      const papers: any = await API.graphql(
-        graphqlOperation(listPapers, {
+      // const papers: any = await API.graphql(
+      //   graphqlOperation(listPapers, {
+      //     filter: {
+      //       accountID: {
+      //         eq: accounts.data.listAccounts.items[0].id
+      //       }
+      //     }
+      //   })
+      // )
+
+      const papers: any = await API.graphql({
+        query: listPapers,
+        variables: {
           filter: {
             accountID: {
               eq: accounts.data.listAccounts.items[0].id
             }
           }
-        })
-      )
+        }
+      })
+
       store.dispatch('market/setMyPapers', papers.data.listPapers.items)
       loading.value = false
     })

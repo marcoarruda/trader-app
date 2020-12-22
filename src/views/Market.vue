@@ -58,9 +58,15 @@ export default defineComponent({
         owner: { eq: store.getters['auth/getUser'].username }
       }
 
-      const accounts: any = await API.graphql(
-        graphqlOperation(listAccounts, { filter })
-      )
+      const accounts: any = await API.graphql({
+        query: listAccounts,
+        variables: {
+          filter
+        },
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        authMode: 'AMAZON_COGNITO_USER_POOLS'
+      })
       store.dispatch('market/setAccount', accounts.data.listAccounts.items[0])
       const companies: any = await API.graphql(graphqlOperation(listCompanys))
 

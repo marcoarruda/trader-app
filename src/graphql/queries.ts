@@ -24,7 +24,7 @@ export const getCompany = /* GraphQL */ `
       updatedAt
     }
   }
-`;
+`
 export const listCompanys = /* GraphQL */ `
   query ListCompanys(
     $filter: ModelCompanyFilterInput
@@ -46,7 +46,7 @@ export const listCompanys = /* GraphQL */ `
       nextToken
     }
   }
-`;
+`
 export const getPaper = /* GraphQL */ `
   query GetPaper($id: ID!) {
     getPaper(id: $id) {
@@ -54,16 +54,6 @@ export const getPaper = /* GraphQL */ `
       quantity
       accountID
       companyID
-      account {
-        id
-        balance
-        owner
-        papers {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
       company {
         id
         code
@@ -77,9 +67,19 @@ export const getPaper = /* GraphQL */ `
       }
       createdAt
       updatedAt
+      account {
+        id
+        balance
+        owner
+        papers {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
     }
   }
-`;
+`
 export const listPapers = /* GraphQL */ `
   query ListPapers(
     $filter: ModelPaperFilterInput
@@ -92,13 +92,6 @@ export const listPapers = /* GraphQL */ `
         quantity
         accountID
         companyID
-        account {
-          id
-          balance
-          owner
-          createdAt
-          updatedAt
-        }
         company {
           id
           code
@@ -113,29 +106,7 @@ export const listPapers = /* GraphQL */ `
       nextToken
     }
   }
-`;
-export const getAccount = /* GraphQL */ `
-  query GetAccount($id: ID!) {
-    getAccount(id: $id) {
-      id
-      balance
-      owner
-      papers {
-        items {
-          id
-          quantity
-          accountID
-          companyID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
+`
 export const listAccounts = /* GraphQL */ `
   query ListAccounts(
     $filter: ModelAccountFilterInput
@@ -147,13 +118,21 @@ export const listAccounts = /* GraphQL */ `
         id
         balance
         owner
-        papers {
-          nextToken
-        }
         createdAt
         updatedAt
       }
       nextToken
     }
   }
-`;
+`
+export const getAccount = /* GraphQL */ `
+  query GetAccount($id: ID!) {
+    getAccount(id: $id) {
+      id
+      balance
+      owner
+      createdAt
+      updatedAt
+    }
+  }
+`
