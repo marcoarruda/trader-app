@@ -5,6 +5,7 @@
       <div
         :class="{
           'company-price': true,
+          'price-equal': !company.trending,
           'price-up': company.trending === 'up',
           'price-down': company.trending === 'down'
         }"
@@ -64,7 +65,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, watchEffect } from 'vue'
 import CustomButton from './CustomButton.vue'
 import CustomInput from './CustomInput.vue'
 import TrendingUpIcon from './TrendingUpIcon.vue'
@@ -301,6 +302,12 @@ export default defineComponent({
       store.dispatch('setLoading', false)
     }
 
+    watchEffect(() => {
+      if (props.company.trending) {
+        setTimeout(() => delete props.company.trending, 27000)
+      }
+    })
+
     const maxBuy = computed(() => {
       return Math.floor(
         store.getters['market/getAccount']?.balance / props.company.price
@@ -347,11 +354,23 @@ export default defineComponent({
   }
 }
 
+.price-equal {
+  color: #fff !important;
+  visibility: visible;
+  -webkit-animation: fadein 0.5s;
+  animation: fadein 0.5s;
+}
 .price-up {
   color: #42b983 !important;
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 26s;
+  animation: fadein 0.5s, fadeout 0.5s 26s;
 }
 .price-down {
   color: #b94242 !important;
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 26s;
+  animation: fadein 0.5s, fadeout 0.5s 26s;
 }
 .card-action {
   margin-top: 6px;
@@ -384,6 +403,49 @@ export default defineComponent({
 
   &:hover {
     background: #b94242;
+  }
+}
+@-webkit-keyframes fadein {
+  from {
+    bottom: 0;
+    opacity: 0;
+  }
+  to {
+    bottom: 30px;
+    opacity: 1;
+  }
+}
+
+@keyframes fadein {
+  from {
+    bottom: 0;
+    opacity: 0;
+  }
+  to {
+    bottom: 30px;
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeout {
+  from {
+    bottom: 30px;
+    opacity: 1;
+  }
+  to {
+    bottom: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes fadeout {
+  from {
+    bottom: 30px;
+    opacity: 1;
+  }
+  to {
+    bottom: 0;
+    opacity: 0;
   }
 }
 </style>
