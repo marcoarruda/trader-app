@@ -157,9 +157,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-$headerMargin: 90px;
-$backgroundColor: #23272a;
-
 *,
 body,
 #app {
@@ -177,17 +174,17 @@ a {
 }
 
 .container {
-  margin-top: $headerMargin;
+  margin-top: 90px;
   flex-direction: column;
   display: flex;
   align-items: center;
   width: 100%;
-  height: calc(100vh - $headerMargin);
+  height: calc(100vh - 90px);
   color: #fff;
 }
 
 body {
-  background-color: $backgroundColor;
+  background-color: #23272a;
 
   overflow-x: hidden;
 }

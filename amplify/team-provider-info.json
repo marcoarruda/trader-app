@@ -20,6 +20,12 @@
           "deploymentBucketName": "amplify-traderapp-dev-83720-deployment",
           "s3Key": "amplify-builds/traderappab891467-build.zip"
         }
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "deaggff8f7b3m",
+          "type": "manual"
+        }
       }
     },
     "nonCFNdata": {
