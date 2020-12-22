@@ -2,26 +2,35 @@
   <div class="card-container">
     <div class="card-title">
       <div class="company-code">{{ company.code }}</div>
-      <div
-        :class="{
-          'company-price': true,
-          'price-equal': !company.trending,
-          'price-up': company.trending === 'up',
-          'price-down': company.trending === 'down'
-        }"
-      >
-        <EqualsIcon
-          v-if="!company.trending"
-          :style="{ width: '30px', height: '30px' }"
-        />
-        <TrendingUpIcon
-          v-if="company.trending && company.trending === 'up'"
-          :style="{ width: '30px', height: '30px' }"
-        />
-        <TrendingDownIcon
-          v-if="company.trending && company.trending === 'down'"
-          :style="{ width: '30px', height: '30px' }"
-        />
+      <div class="company-price">
+        <div
+          :class="{
+            'price-equal': !company.trending,
+            'price-up': company.trending === 'up',
+            'price-down': company.trending === 'down'
+          }"
+          style="display: flex"
+        >
+          <EqualsIcon
+            :class="{
+              hidden: company.trending
+            }"
+            :style="{ width: '30px', height: '30px' }"
+          />
+          <TrendingUpIcon
+            :class="{
+              hidden: company.trending !== 'up'
+            }"
+            :style="{ width: '30px', height: '30px' }"
+          />
+          <TrendingDownIcon
+            :class="{
+              hidden: company.trending !== 'down'
+            }"
+            :style="{ width: '30px', height: '30px' }"
+          />
+        </div>
+
         <div style="margin-left: 5px">
           {{ numeral(company.price).format('$ 0,0.00') }}
         </div>
@@ -302,12 +311,6 @@ export default defineComponent({
       store.dispatch('setLoading', false)
     }
 
-    watchEffect(() => {
-      if (props.company.trending) {
-        setTimeout(() => delete props.company.trending, 27000)
-      }
-    })
-
     const maxBuy = computed(() => {
       return Math.floor(
         store.getters['market/getAccount']?.balance / props.company.price
@@ -354,6 +357,10 @@ export default defineComponent({
   }
 }
 
+.hidden {
+  visibility: hidden;
+  display: none;
+}
 .price-equal {
   color: #fff !important;
   visibility: visible;
@@ -363,14 +370,14 @@ export default defineComponent({
 .price-up {
   color: #42b983 !important;
   visibility: visible;
-  -webkit-animation: fadein 0.5s, fadeout 0.5s 26s;
-  animation: fadein 0.5s, fadeout 0.5s 26s;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 20s;
+  animation: fadein 0.5s, fadeout 0.5s 20s;
 }
 .price-down {
   color: #b94242 !important;
   visibility: visible;
-  -webkit-animation: fadein 0.5s, fadeout 0.5s 26s;
-  animation: fadein 0.5s, fadeout 0.5s 26s;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 20s;
+  animation: fadein 0.5s, fadeout 0.5s 20s;
 }
 .card-action {
   margin-top: 6px;

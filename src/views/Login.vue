@@ -1,5 +1,14 @@
 <template>
-  <div class="login-container">
+  <LoadingSpinner
+    :style="{
+      position: 'absolute',
+      left: '50%',
+      top: '50%',
+      transform: 'translate(-50%, -50%)'
+    }"
+    v-if="globalLoading"
+  />
+  <div class="login-container" v-else>
     <h1>Login</h1>
     <form @submit.prevent="signIn()">
       <CustomInput
@@ -29,7 +38,7 @@
 
 <script lang="ts">
 import { Auth } from 'aws-amplify'
-import { computed, defineComponent, onMounted, reactive } from 'vue'
+import { computed, defineComponent, onMounted, reactive, ref } from 'vue'
 import { useStore } from 'vuex'
 import CustomInput from '@/components/CustomInput.vue'
 import CustomButton from '@/components/CustomButton.vue'
@@ -41,6 +50,7 @@ export default defineComponent({
   components: { CustomInput, CustomButton, LoadingSpinner },
   setup() {
     const store = useStore()
+    const globalLoading = ref(true)
 
     const userCredentials = reactive({
       email: '',
@@ -89,8 +99,10 @@ export default defineComponent({
       try {
         const user = await Auth.currentAuthenticatedUser()
         store.dispatch('auth/setUser', user)
+        globalLoading.value = false
         router.push('/')
       } catch (error) {
+        globalLoading.value = false
         console.log(error)
       }
     })
@@ -98,6 +110,7 @@ export default defineComponent({
     return {
       userCredentials,
       signIn,
+      globalLoading,
       loading: computed(() => store.getters.getLoading)
     }
   }

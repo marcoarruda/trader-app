@@ -74,6 +74,7 @@ export default defineComponent({
             next: (data: any) => {
               const companies = store.getters['market/getCompanies']
               const papers = store.getters['market/getMyPapers']
+              store.dispatch('market/setUpdated', true)
 
               // Update company inside paper object
               store.dispatch(
@@ -169,6 +170,10 @@ body,
   padding: 0;
   box-sizing: border-box;
   outline: none;
+}
+
+a {
+  color: white;
 }
 
 .container {

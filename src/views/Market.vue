@@ -44,6 +44,7 @@ export default defineComponent({
   setup() {
     const store = useStore()
     const loading = ref(true)
+    const updated = computed(() => store.getters['market/getUpdated'])
 
     onMounted(async () => {
       const accountStore = store.getters['market/getAccount']
